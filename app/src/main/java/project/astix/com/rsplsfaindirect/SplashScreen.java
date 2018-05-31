@@ -124,7 +124,7 @@ public class SplashScreen extends BaseActivity
         {
 
         }
-          imei="865735032952249";  // Live User
+        //  imei="865735032952249";  // Live User
 
         // imei="864449033669429";
 
@@ -134,7 +134,7 @@ public class SplashScreen extends BaseActivity
 
          //imei="353202065143237";    // Development Imei
         //  imei="865404034791887";
-        //imei="862103031525560";  // test release
+        imei="354010084603910";  // test release
        // imei="352335088132430"; // test release
 
     if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))

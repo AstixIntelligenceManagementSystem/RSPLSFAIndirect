@@ -9824,7 +9824,11 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 						}
 						else
 						{
-							accAsignVal=BenSubBucketValue;
+							if(isLastPrdct)
+							{
+								accAsignVal=BenSubBucketValue;
+							}
+
 						}
 					}
 					//Product Lines
@@ -9837,7 +9841,10 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 						}
 						else
 						{
-							accAsignVal=BenSubBucketValue;
+							if(isLastPrdct)
+							{
+								accAsignVal=BenSubBucketValue;
+							}
 						}
 					}
 					 //Product Value
@@ -9864,8 +9871,11 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 						}
 						else
 						{
-							
-							accAsignVal=BenSubBucketValue;
+
+							if(isLastPrdct)
+							{
+								accAsignVal=BenSubBucketValue;
+							}
 						}
 						
 					}
@@ -9889,7 +9899,10 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 						}
 						else
 						{
-							accAsignVal=BenSubBucketValue;
+							if(isLastPrdct)
+							{
+								accAsignVal=BenSubBucketValue;
+							}
 						}
 					}
 					 return accAsignVal;
