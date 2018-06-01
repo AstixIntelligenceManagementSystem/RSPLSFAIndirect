@@ -17800,6 +17800,7 @@ close();
     public void fnDeleteRecordsAllRecordsForClickedProdoductIdSchm_1_3(String StoreID,int ProductIdOnClicked,String pdaOrderID,int schmId)
     {
         open();
+        //tblStoreProductAddOnSchemeApplied
         db.execSQL("DELETE FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and OrderIDPDA='"+pdaOrderID+"' and ProductID="+ ProductIdOnClicked+" and schId="+ schmId);
        // db.execSQL("DELETE FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and OrderIDPDA='"+pdaOrderID+"' and schId="+ ProductIdOnClicked);
         close();
@@ -31539,6 +31540,46 @@ open();
         initialValues.put("OutstandingAmt", OutstandingAmt);
         initialValues.put("AmtOverdue", AmtOverdue);
         return db.insert(DATABASE_TABLE_tblInvoiceLastVisitDetails, null, initialValues);
+    }
+
+
+
+
+
+
+
+
+    public String fnGetDistinctSchIdsAgainstStoreForDelete(String StoreID,String ProductIdOnClicked,int schId)
+    {
+        open();
+        Cursor cursor = db.rawQuery("SELECT schSlbRowId,SchTypeId FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and  schId="+schId+" and BenSubBucketType in(1,5,2,6,3,7,10)", null);
+        String chkI = "";
+        try {
+            if(cursor.getCount()>0)
+            {
+
+                if (cursor.moveToFirst()) {
+
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        if(cursor.getString(0)!=null && cursor.getString(1)!=null)
+                        {
+                            chkI = cursor.getString(0)+"^"+cursor.getString(1);
+                        }
+                        cursor.moveToNext();
+                    }
+                }
+            }
+
+        } finally {
+            if(cursor!=null)
+            {
+                cursor.close();
+            }
+
+            close();
+        }
+        return chkI;
     }
 }
 
