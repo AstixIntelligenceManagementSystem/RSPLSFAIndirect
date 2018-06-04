@@ -1385,7 +1385,6 @@ if(flgCheckNewOldStore==1)
                     "Provider: " + mCurrentLocation.getProvider();
 
         } else {
-
         }
     }
 
