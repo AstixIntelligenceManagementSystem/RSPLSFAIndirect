@@ -1365,8 +1365,7 @@ if(flgCheckNewOldStore==1)
 
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
     }
     private void updateUI() {
