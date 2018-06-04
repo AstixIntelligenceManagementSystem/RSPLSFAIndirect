@@ -1198,12 +1198,50 @@ if(flgCheckNewOldStore==1)
         helperDb.deletetblstoreMstrOnStoreIDBasis(selStoreID);
 
         helperDb.savetblStoreMain(beatSelected.split(Pattern.quote("-"))[1],beatSelected.split(Pattern.quote("-"))[2],selStoreID,StoreName,"NA","NA","NA","NA","NA","NA","NA","0",StoreTypeTradeChannel,
-                Integer.parseInt("1"),0,0, 0, "NA",VisitStartTS,imei,""+battLevel,1,String.valueOf(fnLati),String.valueOf(fnLongi),"" + fnAccuracy,"" + fnAccurateProvider,0,hmapStoreAddress.get("0"),allValuesOfPaymentStageID,flgHasQuote,flgAllowQuotation,flgSubmitFromQuotation,flgGSTCapture,flgGSTCompliance,GSTNumber,flgGSTRecordFromServer,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder, hmapStoreAddress.get("2"), hmapStoreAddress.get("1"), hmapStoreAddress.get("3"),distID, hmapStoreAddress.get("4"), hmapStoreAddress.get("5"), hmapStoreAddress.get("6"), hmapStoreAddress.get("7"), hmapStoreAddress.get("8"), hmapStoreAddress.get("9"));
+                Integer.parseInt("1"),0,0, 0, "NA",VisitStartTS,imei,""+battLevel,3,String.valueOf(fnLati),String.valueOf(fnLongi),"" + fnAccuracy,"" + fnAccurateProvider,0,hmapStoreAddress.get("0"),allValuesOfPaymentStageID,flgHasQuote,flgAllowQuotation,flgSubmitFromQuotation,flgGSTCapture,flgGSTCompliance,GSTNumber,flgGSTRecordFromServer,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder, hmapStoreAddress.get("2"), hmapStoreAddress.get("1"), hmapStoreAddress.get("3"),distID, hmapStoreAddress.get("4"), hmapStoreAddress.get("5"), hmapStoreAddress.get("6"), hmapStoreAddress.get("7"), hmapStoreAddress.get("8"), hmapStoreAddress.get("9"));
 
-        helperDb.saveSOAPdataStoreListDetailsInNewTable(selStoreID, hmapStoreAddress.get("2"), hmapStoreAddress.get("1"), hmapStoreAddress.get("3"),1);
+        helperDb.saveSOAPdataStoreListDetailsInNewTable(selStoreID, hmapStoreAddress.get("2"), hmapStoreAddress.get("1"), hmapStoreAddress.get("3"),3);
         helperDb.close();
+        dbengine.UpdateStorWhileAdding(selStoreID,3);
+        // new code
+
+        try {
 
 
+            File OrderXMLFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
+
+            if (!OrderXMLFolder.exists())
+            {
+                OrderXMLFolder.mkdirs();
+
+            }
+            dbengine.open();
+            String presentRoute=dbengine.GetActiveRouteID();
+            dbengine.close();
+
+
+            Date dateobj = new Date(syncTIMESTAMP);
+            SimpleDateFormat df1 = new SimpleDateFormat("dd.MM.yyyy.HH.mm.ss",Locale.ENGLISH);
+
+            newfullFileName=imei+"."+presentRoute+"."+df1.format(dateobj);
+
+
+            DA.open();
+            DA.export(CommonInfo.DATABASE_NAME, newfullFileName,presentRoute);
+            DA.close();
+
+            dbengine.savetbl_XMLfiles(newfullFileName, "3","1");
+            dbengine.UpdateStorWhileAdding(selStoreID,5);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            if(pDialogGetStores.isShowing())
+            {
+                pDialogGetStores.dismiss();
+            }
+        }
+        // new code
         if(activityFrom.equals("StoreSelection"))
         {
             Intent ide=new Intent(AddNewStore_DynamicSectionWise.this,StoreSelection.class);

@@ -399,9 +399,10 @@ public class NewStoreForm extends Fragment  {
 		{
 			isNextMovedSlide=false;	
 			sectionIsShown=sectionToShowOrHide;
-			
-			
-				alertSaveAndSaveExit(getResources().getString(R.string.txtExit),getResources().getString(R.string.SveDataBeforeExit),true);
+
+
+			alertOnbackButtonClick(getResources().getString(R.string.txtExit),getResources().getString(R.string.strDataLostIfNotSubmitted),true);
+				//alertSaveAndSaveExit(getResources().getString(R.string.txtExit),getResources().getString(R.string.SveDataBeforeExit),true);
 			
 		}
 		else if(isNextPressed==5)
@@ -8763,5 +8764,73 @@ public void selectedOption(String optId, String optionVal, EditText editext,List
 		}
 		return boolValidateStateCity;
 	}
+	public void alertOnbackButtonClick(String title,String message,final boolean isExitClkd)
+	{
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
 
+		// Setting Dialog Title
+		alertDialog.setTitle(title);
+
+		// Setting Dialog Message
+		alertDialog.setMessage(message);
+
+
+
+		// Setting Positive "Yes" Button
+		alertDialog.setPositiveButton(getResources().getString(R.string.txtExitwithoutSave), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int which) {
+
+				// Write your code here to invoke YES event
+
+				// User pressed YES button. Write Logic Here
+
+
+                         /*if(helperDb.checkCountIntblNewStoreMainTable(AddNewStore_DynamicSectionWise.selStoreID)==0)
+                         {
+                          helperDb.open();
+                         // helperDb.fndeleteNewStoreSalesQuotePaymentDetails(AddNewStore_DynamicSectionWise.selStoreID);
+                          helperDb.close();
+                         }
+          Intent intent = new Intent(getActivity(), LauncherActivity.class);
+          intent.putExtra("FROM", "AddNewStore_DynamicSectionWise");
+          getActivity().startActivity(intent);
+          getActivity().finish();*/
+
+
+				if(activityFrom.equals("StoreSelection")){
+
+					Intent intent = new Intent(getActivity(), StoreSelection.class);
+					intent.putExtra("imei", AddNewStore_DynamicSectionWise.imei);
+					intent.putExtra("userDate", AddNewStore_DynamicSectionWise.date_value);
+					intent.putExtra("pickerDate", AddNewStore_DynamicSectionWise.pickerDate);
+					intent.putExtra("rID", getActiveRouteId);
+					getActivity().startActivity(intent);
+					getActivity().finish();
+
+				}
+				else if(activityFrom.equals("AllButtonActivity")){
+					Intent intent = new Intent(getActivity(), AllButtonActivity.class);
+					intent.putExtra("imei", AddNewStore_DynamicSectionWise.imei);
+					intent.putExtra("userDate", AddNewStore_DynamicSectionWise.date_value);
+					intent.putExtra("pickerDate", AddNewStore_DynamicSectionWise.pickerDate);
+					intent.putExtra("rID", getActiveRouteId);
+					getActivity().startActivity(intent);
+					getActivity().finish();
+
+				}
+
+
+			}
+		});
+
+		// Setting Negative "NO" Button
+		alertDialog.setNegativeButton(getResources().getString(R.string.AlertDialogCancelButton), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+
+				dialog.dismiss();
+			}
+		});
+
+		// Showing Alert Message
+		alertDialog.show();}
 }

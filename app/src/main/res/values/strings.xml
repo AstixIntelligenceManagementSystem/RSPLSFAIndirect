@@ -11,7 +11,7 @@
 
     <string name="overdueBal">OverDue Balance</string>
 
-
+    <string name="strDataLostIfNotSubmitted">The Filled data will be lost if not submitted?</string>
     <string name="outstandingBal">Outstanding Balance</string>
 
 <!--Alert Box message-->

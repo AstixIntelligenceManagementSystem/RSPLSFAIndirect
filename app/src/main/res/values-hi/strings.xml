@@ -797,7 +797,7 @@
 
     <string name="AlertTelephonic">यह टेलीफ़ोनिक ऑर्डर है और स्टोर विज़िट की गणना नहीं होगी, कृपया आगे बढ़ने की पुष्टि करें</string>
 
-
+    <string name="strDataLostIfNotSubmitted">The Filled data will be lost if not submitted?</string>
 
 
 </resources>
