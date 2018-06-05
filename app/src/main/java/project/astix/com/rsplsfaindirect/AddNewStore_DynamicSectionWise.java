@@ -465,6 +465,7 @@ int flgCheckNewOldStore=0;
         {
             StoreName="NA";
             selStoreID=extras.getStringExtra("storeID");
+
             if(selStoreID.equals("0"))
             {
                 flgCheckNewOldStore=1;

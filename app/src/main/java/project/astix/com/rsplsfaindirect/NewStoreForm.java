@@ -5251,7 +5251,7 @@ public void selectedOption(String optId, String optionVal, EditText editext,List
 						{
 							EditText edVal=(EditText)view;
 							
-							if(TextUtils.isEmpty(edVal.getText().toString()))
+							if(TextUtils.isEmpty(edVal.getText().toString().trim()))
 							{
 								edVal.requestFocus();
 								showErrorAlert(getResources().getString(R.string.PleaseFill)+" "+((TextView)ll_data.findViewWithTag(entry.getKey()+"?")).getText().toString());
