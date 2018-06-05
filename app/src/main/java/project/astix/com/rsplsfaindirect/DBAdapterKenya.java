@@ -22294,7 +22294,6 @@ open();
         open();
         try
         {
-
             final ContentValues values = new ContentValues();
             values.put("Sstat", flag2set);
             int affected1 = db.update("tblStoreList", values,"StoreID=?", new String[] { sID });
@@ -22309,7 +22308,6 @@ open();
             Log.e(TAG, ex.toString());
         }
         close();
-
     }
 						 public void UpdateStoreMaterialphotoFlag(String sID, int flag2set)
 							{
