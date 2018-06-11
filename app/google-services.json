@@ -1,27 +1,31 @@
 {
   "project_info": {
-    "project_number": "482039245240",
-    "firebase_url": "https://rspl-sfa.firebaseio.com",
-    "project_id": "rspl-sfa",
-    "storage_bucket": "rspl-sfa.appspot.com"
+    "project_number": "883448859120",
+    "firebase_url": "https://rsplsfa.firebaseio.com",
+    "project_id": "rsplsfa",
+    "storage_bucket": "rsplsfa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:482039245240:android:ee155e21cf2a7ddd",
+        "mobilesdk_app_id": "1:883448859120:android:ee155e21cf2a7ddd",
         "android_client_info": {
           "package_name": "project.astix.com.rsplsfaindirect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "482039245240-ie86hse3tv2nn9rhr25v8c710o792pnp.apps.googleusercontent.com",
+          "client_id": "883448859120-2mu9e02es3el6mlo3a1u48biglt9gbcg.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "883448859120-2mu9e02es3el6mlo3a1u48biglt9gbcg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDw9sBbHpqsd-eb72KlGHC1ssP7geOeqD4"
+          "current_key": "AIzaSyD_7mSWEnwiSt6XYEj9vykq5RXDWJnWGOA"
         }
       ],
       "services": {

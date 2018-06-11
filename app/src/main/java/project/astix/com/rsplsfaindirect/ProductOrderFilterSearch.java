@@ -5365,7 +5365,7 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 
 									for(String productIdToFillSlab:productFullFilledSlabGlobal)
 									{
-										if(Integer.parseInt(hmapPrdctOdrQty.get(productIdToFillSlab.split(Pattern.quote("^"))[0]))>0)
+										if((hmapPrdctOdrQty.containsKey(productIdToFillSlab.split(Pattern.quote("^"))[0])) && (Integer.parseInt(hmapPrdctOdrQty.get(productIdToFillSlab.split(Pattern.quote("^"))[0]))>0))
 										{
 											arrProductIDMappedInSchSlbSubBukBenifits.put(hmapPrdctIdPrdctName.get(productIdToFillSlab.split(Pattern.quote("^"))[0]), productIdToFillSlab.split(Pattern.quote("^"))[0]);
 										}
