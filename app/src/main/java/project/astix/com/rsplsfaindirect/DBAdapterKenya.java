@@ -11304,8 +11304,59 @@ close();
 			cursor.close();
 		}
 	}
-	
-	public HashMap<String, String> checkForStoreIdSstat()
+
+    public HashMap<String, String> checkForStoreIdSstat()
+    {
+        Cursor cursor=db.rawQuery("Select StoreID,Sstat from tblStoreList where Sstat in(1,3,4,5,6)",null);
+        HashMap<String, String> hmapStoreIDSstat=new HashMap<String, String>();
+        if(cursor.getCount()>0)
+        {
+            if(cursor.moveToFirst())
+            {
+                for(int index=0;index<cursor.getCount();index++)
+                {
+                    hmapStoreIDSstat.put(cursor.getString(0), cursor.getString(1));
+                    cursor.moveToNext();
+                }
+            }
+        }
+        return hmapStoreIDSstat;
+    }
+    public HashMap<String, String> checkForStoreIdForDate()
+    {
+        Cursor cursor=db.rawQuery("Select StoreID,ForDate from tblStoreList where Sstat in(1,3,4,5,6)",null);
+        HashMap<String, String> hmapStoreIDForDate=new HashMap<String, String>();
+        if(cursor.getCount()>0)
+        {
+            if(cursor.moveToFirst())
+            {
+                for(int index=0;index<cursor.getCount();index++)
+                {
+                    hmapStoreIDForDate.put(cursor.getString(0), cursor.getString(1));
+                    cursor.moveToNext();
+                }
+            }
+        }
+        return hmapStoreIDForDate;
+    }
+    public HashMap<String, String> checkForStoreIdFlgOrderType()
+    {
+        Cursor cursor=db.rawQuery("Select StoreID,flgOrderType from tblStoreList where Sstat in(1,3,4,5,6)",null);
+        HashMap<String, String> hmapStoreIDFlgOrderType=new HashMap<String, String>();
+        if(cursor.getCount()>0)
+        {
+            if(cursor.moveToFirst())
+            {
+                for(int index=0;index<cursor.getCount();index++)
+                {
+                    hmapStoreIDFlgOrderType.put(cursor.getString(0), cursor.getString(1));
+                    cursor.moveToNext();
+                }
+            }
+        }
+        return hmapStoreIDFlgOrderType;
+    }
+	/*public HashMap<String, String> checkForStoreIdSstat()
 	{
 		Cursor cursor=db.rawQuery("Select StoreID,Sstat from tblStoreList where Sstat in(1,3,4)",null);
 		HashMap<String, String> hmapStoreIDSstat=new HashMap<String, String>();
@@ -11321,7 +11372,7 @@ close();
 			}
 		}
 		return hmapStoreIDSstat;
-	}
+	}*/
 	
 	public String fnValueFreeQtyOrDiscountForCaculation(String strSchemType,
 			String strSchemeID, int MaxValue) {

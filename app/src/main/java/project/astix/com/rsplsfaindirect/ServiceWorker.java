@@ -146,7 +146,7 @@ public class ServiceWorker
 	            InputSource is = new InputSource();
 	            is.setCharacterStream(new StringReader(name));
 	            Document doc = db.parse(is);
-			System.out.println("shivam4");
+			//System.out.println("shivam4");
 	          
 	        //   dbengine.open();
 	            
@@ -180,6 +180,7 @@ public class ServiceWorker
 
 					String StoreIDPDAFromServer="NA";
 					String RouteNodeType="0";
+					String ForDate=dateVAL;
 	            	
                        
 	                Element element = (Element) tblUOMMstrNode.item(i);
@@ -196,6 +197,18 @@ public class ServiceWorker
 		                	StoreID=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
+					if(!element.getElementsByTagName("StoreIDPDA").equals(null))
+					{
+
+						NodeList StoreIDPDANode = element.getElementsByTagName("StoreIDPDA");
+						Element     line = (Element) StoreIDPDANode.item(0);
+
+						if(StoreIDPDANode.getLength()>0)
+						{
+
+							StoreIDPDAFromServer=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
 	                
 	                if(!element.getElementsByTagName("StoreName").equals(null))
 	                 {
@@ -343,8 +356,37 @@ public class ServiceWorker
 		                	PaymentStage=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
-	                
-	                
+
+					if(StoreSelection.hmapStoreIdSstat!=null)
+					{
+						//StoreIDPDAFromServer
+
+						if(StoreSelection.hmapStoreIdSstat.containsKey(StoreIDPDAFromServer))
+						{
+							StoreID=StoreIDPDAFromServer;
+						}
+						if(StoreSelection.hmapStoreIdSstat.containsKey(StoreID))
+						{
+							Sstat=Integer.parseInt(StoreSelection.hmapStoreIdSstat.get(StoreID));
+							ForDate=StoreSelection.hmapStoreIdForDate.get(StoreID);
+							flgOrderType=Integer.parseInt(StoreSelection.hmapStoreIdflgOrderType.get(StoreID));
+						}
+						else
+						{
+							if(!element.getElementsByTagName("Sstat").equals(null))
+							{
+
+								NodeList SstatNode = element.getElementsByTagName("Sstat");
+								Element     line = (Element) SstatNode.item(0);
+
+								if(SstatNode.getLength()>0)
+								{
+
+									Sstat=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+								}
+							}
+						}
+					}
 	                
 	                /*if(StoreSelection.hmapStoreIdSstat!=null)
 					{
@@ -366,7 +408,7 @@ public class ServiceWorker
 		                    }
 		                 }}	
 					}*/
-					if(StoreSelection.hmapStoreIdSstat!=null)
+					/*if(StoreSelection.hmapStoreIdSstat!=null)
 					{
 						//StoreIDPDAFromServer
 
@@ -396,7 +438,7 @@ public class ServiceWorker
 								}
 							}
 						}
-					}
+					}*/
 	                if(!element.getElementsByTagName("flgHasQuote").equals(null))
 	                 {
 					
@@ -489,18 +531,7 @@ public class ServiceWorker
 							DBR=xmlParser.getCharacterDataFromElement(line);
 						}
 					}
-					if(!element.getElementsByTagName("StoreIDPDA").equals(null))
-					{
 
-						NodeList StoreIDPDANode = element.getElementsByTagName("StoreIDPDA");
-						Element     line = (Element) StoreIDPDANode.item(0);
-
-						if(StoreIDPDANode.getLength()>0)
-						{
-
-							StoreIDPDAFromServer=xmlParser.getCharacterDataFromElement(line);
-						}
-					}
 					if(!element.getElementsByTagName("RouteNodeType").equals(null))
 					{
 
