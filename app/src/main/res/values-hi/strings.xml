@@ -3,9 +3,29 @@
     <string name="app_name">RSPL SFA</string>
     <!-- <string name="app_name">RSPL SFA Stagging</string>-->
     <!--<string name="app_name">RSPL SFA Test</string>-->
-     <!--<string name="app_name">RSPL SFA Dev</string>-->
-    <!--<string name="app_name">RSPL SFA final Release</string>-->
+    <!-- <string name="app_name">RSPL SFA Dev</string>-->
+    <!--<string name="app_name">RSPL SFA Test Release</string>-->
 
+    <string name="Coverage_Area">कवरेज क्षेत्र</string>
+    <string name="Contact_No">संपर्क नंबर</string>
+    <string name="DOB">जन्म तिथि</string>
+
+    <string name="DSR_Profile">डीएसआर प्रोफाइल</string>
+    <string name="today_working">आज का काम</string>
+    <string name="today_Notworking">काम नहीं कर रहे हो</string>
+    <string name="working">काम कर रहे हो</string>
+    <string name="not_working">काम नहीं कर रहे हो</string>
+    <string name="selectDistributorProceeds">कृपया आगे जाने के लिये वितरक चुनें</string>
+
+    <string name="select_attendance_scope">उपस्थिति रिपोर्ट देखें</string>
+    <string name="select_attendance_report">डीएसआर उपस्थिति रिपोर्ट</string>
+    <!--Day Start message start-->
+    <string name="DayStartButtonText">दिन शुरू</string>
+    <string name="ExitButtonText">बाहर जाएं</string>
+    <string name="submittingDayStart">दिन प्रारंभ विवरण जमा हो रहा है ...</string>
+    <string name="selectAtleastOneOption">आगे बढ़ने के लिए कम से कम एक विकल्प का चयन करें।</string>
+    <string name="selectAtleastOneOptionwithedittext">आगे बढ़ने के लिए पहले कारण निर्दिष्ट करें</string>
+    <!--Day Start message end-->
 
     <string name="TtlAmtOutStnding">कुल बकाया: </string>
     <string name="PrvAmtOutStnding">पिछला राशि बकाया: </string>

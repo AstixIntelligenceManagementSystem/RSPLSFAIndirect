@@ -101,7 +101,7 @@ import java.util.zip.ZipOutputStream;
 
 public class AllButtonActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
 
-
+    SharedPreferences sPrefAttandance;
     public boolean serviceException=false;
     public String passDate;
     SharedPreferences sharedPref,sharedPrefReport;
@@ -294,9 +294,10 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         int alreadyLocFind=dbengine.fetchtblIsDBRStockSubmitted();
         if(alreadyLocFind==0)
         {
-            int checkData= dbengine.checkDSRCheckIntblDistributorMapping();
+           // int checkData= dbengine.checkDSRCheckIntblDistributorMapping();
+            int checkStockFilled=dbengine.checkStockFilledByDSR();
             TextView DistributorCheckTextView=(TextView)findViewById(R.id.DistributorCheckTextView);
-            if(checkData==1)
+            if(checkStockFilled==1)
             {
                 ll_marketVisit.setBackgroundColor(Color.parseColor("#ffffff"));
                 ll_distrbtrCheckIn.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -318,6 +319,15 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         {
             DayEndCodeAfterSummary();
         }
+      /*  if(CommonInfo.DayStartClick==2)
+        {
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+            CommonInfo.DayStartClick=0;
+            finish();
+
+        }*/
     }
 
     @Override
@@ -327,6 +337,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         setContentView(R.layout.activity_all_button);
 
         sharedPrefReport = getSharedPreferences("Report", MODE_PRIVATE);
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
 
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
         if(sharedPref.contains("CoverageAreaNodeID"))
@@ -474,8 +485,8 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         marketVisitWorking();
         reportsWorking();
         storeValidationWorking();
-        distributorCheckInWorking();
-        //distributorStockWorking();
+       // distributorCheckInWorking();
+        distributorStockWorking();
         executionWorking();
         noVisitWorking();
         distributorMapWorking();
@@ -532,7 +543,65 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
     }
 
+    private void distributorStockWorking()
+    {
+        ll_distrbtrCheckIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                dbengine.open();
+                dbengine.maintainPDADate();
+                String getPDADate=dbengine.fnGetPdaDate();
+                String getServerDate=dbengine.fnGetServerDate();
 
+                dbengine.close();
+
+
+                if(!getServerDate.equals(getPDADate))
+                {
+                    if(isOnline())
+                    {
+
+                        try
+                        {
+                            click_but_distribtrStock=1;
+
+                        }
+                        catch(Exception e)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        showAlertSingleButtonInfo(getResources().getString(R.string.genTermNoDataConnectionFullMsg));
+                    }
+                }
+                else
+                {
+
+                    if(imei==null)
+                    {
+                        imei=CommonInfo.imei;
+                    }
+                    if(fDate==null)
+                    {
+                        Date date1 = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                        fDate = sdf.format(date1).trim();
+                    }
+
+                    Intent i=new Intent(AllButtonActivity.this,DistributorEntryActivity.class);
+                    i.putExtra("imei", imei);
+                    i.putExtra("CstmrNodeId", CstmrNodeId);
+                    i.putExtra("CstomrNodeType", CstomrNodeType);
+                    i.putExtra("fDate", fDate);
+                    startActivity(i);
+                    // finish();
+                }
+            }
+        });
+    }
     void dayEndWorking()
     {
         ll_DayEnd.setOnClickListener(new View.OnClickListener()
@@ -1533,11 +1602,18 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
                     // code for matching password
                     String reason;
-                    TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    imei = tManager.getDeviceId();
+                    try
+                    {
+                        TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                        imei = tManager.getDeviceId();
+                    }
+                    catch (SecurityException e)
+                    {
+
+                    }
+
                     if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
                     {
-                        imei = tManager.getDeviceId();
                         CommonInfo.imei=imei;
                     }
                     else
@@ -1777,11 +1853,12 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
                     if(false)
                 {
-                    int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                   // int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                    int CheckCountAllWebServiceSuccesful=dbengine.CheckCounttblAllServicesCalledSuccessfull();
                     Date date1 = new Date();
                     //SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                     fDate = getDateInMonthTextFormat();//sdf.format(date1).toString().trim();
-                    if (checkDataNotSync == 1)
+                    if (CheckCountAllWebServiceSuccesful == 1)
                     {
                         dbengine.open();
                         String rID = dbengine.GetActiveRouteID();
@@ -1822,18 +1899,20 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 else
                 {
                    // showAlertSingleButtonInfo(getResources().getString(R.string.DistributorCheckInMsg));
-                    int alreadyLocFind=dbengine.fetchtblIsDBRStockSubmitted();
-                    if(alreadyLocFind==0)
+                    int IsDBRStockSubmitted=dbengine.fetchtblIsDBRStockSubmitted();
+                    if(IsDBRStockSubmitted==0)
                     {
-                        int checkData= dbengine.checkDSRCheckIntblDistributorMapping();
+                        //int checkData= dbengine.checkDSRCheckIntblDistributorMapping();
                         int checkStockFilled=dbengine.checkStockFilledByDSR();
-                        if(checkData==1 && checkStockFilled==1)
+                       // if(checkData==1 && checkStockFilled==1)
+                       if(checkStockFilled==1)
                         {
-                            int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                           // int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                            int CheckCountAllWebServiceSuccesful=dbengine.CheckCounttblAllServicesCalledSuccessfull();
                             Date date1 = new Date();
                             SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                             fDate = sdf.format(date1).toString().trim();
-                            if (checkDataNotSync == 1)
+                            if (CheckCountAllWebServiceSuccesful == 1)
                             {
                                 dbengine.open();
                                 String rID = dbengine.GetActiveRouteID();
@@ -1873,23 +1952,24 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                         }
                         else
                         {
-                            if(checkData!=1)
+                           /* if(checkData!=1)
                             {
                                 showAlertSingleButtonInfo(getResources().getString(R.string.DistributorCheckInMsg));
                             }
                             else
-                            {
+                            {*/
                                 showAlertSingleButtonInfo(getResources().getString(R.string.DistributorStockMessage));
-                            }
+                           // }
                         }
                     }
                     else
                     {
-                        int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                        //int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
+                        int CheckCountAllWebServiceSuccesful=dbengine.CheckCounttblAllServicesCalledSuccessfull();
                         Date date1 = new Date();
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                         fDate = sdf.format(date1).toString().trim();
-                        if (checkDataNotSync == 1)
+                        if (CheckCountAllWebServiceSuccesful == 1)
                         {
                             dbengine.open();
                             String rID = dbengine.GetActiveRouteID();
@@ -3816,6 +3896,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 String RouteType="0";
                 try
                 {
+                    dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(0);
                     dbengine.open();
                     RouteType=dbengine.FetchRouteType(rID);
                     isRouteAvailable=dbengine.fnCheckIfRoutesAvailable();
@@ -4205,6 +4286,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 }
                 else
                 {
+                    dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(1);
                     Intent storeIntent = new Intent(AllButtonActivity.this, StoreSelection.class);
                     storeIntent.putExtra("imei", imei);
                     storeIntent.putExtra("userDate", currSysDate);

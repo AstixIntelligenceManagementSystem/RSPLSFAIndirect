@@ -1793,8 +1793,9 @@ public class DistributorCheckInSecondActivity extends BaseActivity
                 AlertDialog alert = alertDialogSyncOK.create();
                 alert.show();
 
-            } else
-                {
+            }
+            else
+            {
                     showAlertSingleButtonError(getResources().getString(R.string.NoDataConnectionFullMsg));
             }
 

@@ -42,6 +42,8 @@ public class BaseActivity extends Activity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+
+
     public String getIMEI()
     {
         String imei=null;

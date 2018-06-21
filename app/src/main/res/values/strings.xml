@@ -3,11 +3,32 @@
  <string name="app_name">RSPL SFA</string>
    <!-- <string name="app_name">RSPL SFA Stagging</string>-->
  <!-- <string name="app_name">RSPL SFA Test</string>-->
-    <!--<string name="app_name">RSPL SFA Dev</string>-->
-  <!-- <string name="app_name">RSPL SFA Test Release</string>-->
+   <!-- <string name="app_name">RSPL SFA Dev</string>-->
+  <!--<string name="app_name">RSPL SFA Test Release</string>-->
 
   <!-- <string name="app_name">RSPL SFA Training</string>-->
 
+
+
+
+    <string name="DSR_Profile">DSR Profile</string>
+    <string name="selectAtleastOneOption">Please Select atleast one option to proceed.</string>
+    <string name="selectAtleastOneOptionwithedittext">Please Specify the reason first to proceed.</string>
+
+    <string name="today_working">Today Working</string>
+    <string name="today_Notworking">Not Working</string>
+    <string name="select_attendance_scope">View Attendance Report</string>
+    <string name="select_attendance_report">DSR Attendance Report</string>
+    <string name="selectDistributorProceeds">Please select Distributor to Proceed.</string>
+    <string name="dsr_profile">DSR Profile</string>
+
+
+    <string name="working">Working</string>
+    <string name="not_working">Not Working</string>
+
+    <string name="DayStartButtonText">Day Start</string>
+    <string name="ExitButtonText">Exit</string>
+    <string name="submittingDayStart">Submitting Day Start Details...</string>
 
     <string name="overdueBal">OverDue Balance</string>
 
@@ -73,6 +94,11 @@
 
     <!--DSR_Registrion starts here-->
     <string name="txtWelcome">Welcome</string>
+
+    <string name="Coverage_Area">Coverage Area</string>
+    <string name="Contact_No">Contact No</string>
+    <string name="DOB">DOB</string>
+
     <string name="txtDayStart">Day Start</string>
     <string name="radioYes">Yes</string>
     <string name="radioNo">No</string>

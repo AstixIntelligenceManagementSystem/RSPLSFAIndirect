@@ -93,6 +93,7 @@ public class DatabaseAssistantDistributorEntry
 		{			
 			exportTableNew("tblDistributorList");
 			exportTable("tblDistributorSavedData");
+			exportTable("tblDistributorMapping");
 
 		}
 		String xmlString = xmlBuilder.end();

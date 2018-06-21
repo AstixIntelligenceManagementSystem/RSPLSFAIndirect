@@ -59,7 +59,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.astix.Common.CommonInfo;
 
-public class DistributorEntryActivity extends Activity 
+public class DistributorEntryActivity  extends BaseActivity
 {
 	public int StockPcsCaseType=0;
 	RadioButton 	RB_inpieces;
@@ -177,7 +177,7 @@ public class DistributorEntryActivity extends Activity
 		fnGetDistributorList();
 		
 		
-		RB_inpieces=(RadioButton) findViewById(R.id.RB_inpieces);
+	/*	RB_inpieces=(RadioButton) findViewById(R.id.RB_inpieces);
 	 	RB_InCases=(RadioButton) findViewById(R.id.RB_InCases);
 	 	RB_inpieces.setButtonDrawable(getResources().getDrawable(R.drawable.radio_btn_bck));
 	 	RB_inpieces.setChecked(true);
@@ -202,7 +202,7 @@ public class DistributorEntryActivity extends Activity
 				txt_stockEntry_Cases.setText(getText(R.string.StckInPcs));
 				StockPcsCaseType=2;
 			}
-		});
+		});*/
 		
 		//ArrayAdapter<String> adapter = new ArrayAdapter<String>(DistributorEntryActivity.this,android.R.layout.simple_spinner_item,DbrArray);
 		//adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -216,9 +216,9 @@ public class DistributorEntryActivity extends Activity
 			public void onClick(View v) 
 			{
 				saveDistributorStockInTable();
-				Intent i=new Intent(DistributorEntryActivity.this,LauncherActivity.class);
+				/*Intent i=new Intent(DistributorEntryActivity.this,AllButtonActivity.class);
 				i.putExtra("imei", imei);
-				startActivity(i);
+				startActivity(i);*/
 				finish();
 			}
 		});
@@ -383,12 +383,12 @@ public class DistributorEntryActivity extends Activity
 							else
 							{
 								
-								//saveDistributorStockInTable();
+
 								dbengine.open();
 								HmapDistribtrReport = dbengine.fetchtblDistribtrReport(DistribtrId_Global,DistributorNodeType_Global);
 								
 								DistribtrReportColumnDesc = dbengine.fetchtblDistribtrReportColumnDesc(DistribtrId_Global,DistributorNodeType_Global);
-								//System.out.println("SIZE 1:" + DistribtrReportColumnDesc.size());
+
 								dbengine.close();
 								fnForStaticDates();
 								fnGetSavedDataFromPDA();
@@ -405,7 +405,16 @@ public class DistributorEntryActivity extends Activity
 							 }
 							 else
 							 {
-								 btn_save.setVisibility(View.INVISIBLE); 
+								 //btn_save.setVisibility(View.INVISIBLE);
+
+                                 // add this for so that DSR can modify its his mistake and send new xml file
+								 if(isOnline())
+								 {
+									 btn_save.setVisibility(View.VISIBLE);
+									 dbengine.deleteDistributorStockTblesOnDistributorIDBasic(StrDistribtrId_Global,StrDistributorNodeType_Global);
+									 GetDistributorStockEntryData getData= new GetDistributorStockEntryData();
+									 getData.execute();
+								 }
 							 }
 					
 				}
@@ -637,7 +646,7 @@ public class DistributorEntryActivity extends Activity
 				final String SkuShortName = text.split(Pattern.quote("^"))[1].toString().trim();
 
 				LayoutInflater inflater1 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View view1 = inflater1.inflate(R.layout.inflate_row, null);
+				View view1 = inflater1.inflate(R.layout.inflate_row_checkin, null);
 
 				TextView textView_Shortname = (TextView) view1.findViewById(R.id.textView_Shortname);
 				textView_Shortname.setText(SkuShortName);
@@ -931,7 +940,7 @@ public class DistributorEntryActivity extends Activity
 		
 		HmapGetPDAdata = dbengine.fetchtblDistribtrSavedData(DistribtrId_Global,DistributorNodeType_Global);
 		StockPcsCaseType=dbengine.fnGetDistributorStockPcsCaseType(DistribtrId_Global,DistributorNodeType_Global);
-		if(StockPcsCaseType!=0)
+		/*if(StockPcsCaseType!=0)
 		{
 			RB_inpieces.setEnabled(false);
 			RB_InCases.setEnabled(false);
@@ -955,7 +964,7 @@ public class DistributorEntryActivity extends Activity
 			RB_inpieces.setChecked(true);
 			RB_InCases.setChecked(false);
 			StockPcsCaseType=2;
-		}
+		}*/
 		
 	 	
 	 	
@@ -1021,7 +1030,8 @@ public class DistributorEntryActivity extends Activity
 	public void fnGetDistributorList()
 	{
 		dbengine.open();
-		Distribtr_list=dbengine.getDistributorData();
+		//Distribtr_list=dbengine.getDistributorData();
+		Distribtr_list=dbengine.getDistributorDataMstr();
 		dbengine.close();
 		for(int i=0;i<Distribtr_list.length;i++)
 		{
@@ -1715,13 +1725,42 @@ public class DistributorEntryActivity extends Activity
 			 
 			 //Intent i=new Intent(LauncherActivity.this,DistributorEntryActivity.class);
 			 dbengine.deleteDistributorStockTblesOnDistributorIDBasic(DistribtrId_Global,DistributorNodeType_Global);
-			 
-			
-			    Intent i=new Intent(DistributorEntryActivity.this,LauncherActivity.class);
+
+				 if (isOnline())
+				 {
+					 Builder alertDialogSyncOK = new Builder(DistributorEntryActivity.this);
+					 alertDialogSyncOK.setTitle(getText(R.string.genTermInformation));
+					 alertDialogSyncOK.setCancelable(false);
+
+
+					 alertDialogSyncOK.setMessage(getText(R.string.DistributorDataSubmit));
+
+					 alertDialogSyncOK.setNeutralButton(getText(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener() {
+						 public void onClick(DialogInterface dialog, int which) {
+
+
+							 Intent intent=new Intent(DistributorEntryActivity.this,AllButtonActivity.class);
+							 startActivity(intent);
+							 finish();
+
+
+						 }
+					 });
+					 alertDialogSyncOK.setIcon(R.drawable.info_ico);
+
+					 AlertDialog alert = alertDialogSyncOK.create();
+					 alert.show();
+
+				 }
+				 else
+				 {
+					 showAlertSingleButtonError(getResources().getString(R.string.NoDataConnectionFullMsg));
+				 }
+			   /* Intent i=new Intent(DistributorEntryActivity.this,LauncherActivity.class);
 				i.putExtra("imei", imei);
 				
 				startActivity(i);
-				finish();
+				finish();*/
 			 }
 		 
 		 

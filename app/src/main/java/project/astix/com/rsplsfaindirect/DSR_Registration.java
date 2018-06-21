@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -86,10 +87,10 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     LinearLayout LL_banner_image,parentOf_questionLayout,parentOf_validationLayout,parentOf_registrationformLayout,parent_of_marriedSection,mContent;
     RadioButton radio_yes,radio_no, radio_Male,radio_Female,radio_married,radio_unmarried;
     TextView welcomeTextView,txt_Dob_credential,Text_Dob,Text_married_date,spinnerQualification,Text_capture_image,Text_Browse_image,spinner_bloodgrp,textMessage,text_UpdateNow,text_NotYou,text_Daystart;
-    TextView textviewFirstname,textviewLastname,textviewContact,textviewDOB,textviewSex,textviewMaritalStatus,textviewMarriedDate,textviewQualification,textviewUpdatedPhoto,textviewBloodGrp,textviewSignhere;
+    TextView CovrageArea,textContact,textDob,ContactOnWelcome , DobOnWelcome,textCoverage ,textviewFirstname,textviewLastname,textviewContact,textviewDOB,textviewSex,textviewMaritalStatus,textviewMarriedDate,textviewQualification,textviewUpdatedPhoto,textviewBloodGrp,textviewSignhere;
     EditText ET_mobile_credential,ET_firstname,ET_lastname ,ET_contact_no,editText_emailID;
     Button validate_btn,Submit_btn,BtnCancel;
-    ImageView imgView_photo,imgCncl;
+    ImageView imgView_photo,imgCncl,profile_image;
     public int chkFlgForErrorToCloseApp=0;
 
     String mobNumberForService;
@@ -150,6 +151,22 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     String photoNameGlobal="NA";
     String userNodeIdGlobal="0";
     String userNodetypeGlobal="0";
+    SharedPreferences sPrefAttandance;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(CommonInfo.DayStartClick==2)
+        {
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+            CommonInfo.DayStartClick=0;
+            finish();
+
+        }
+    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) // Control the PDA
     // Native Button
@@ -192,8 +209,8 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         {
             imei=CommonInfo.imei.trim();
         }
-
-
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
+        profile_image=(ImageView)findViewById(R.id.profile_image);
         //Retreiving master data from database
         getDataFromDataBase();
 
@@ -209,17 +226,19 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         mustFillViews();
         fillDataToLayoutFromDataBase();
 
-        if(FROM.equals("DAYEND"))
-        {
-            imei = intent.getStringExtra("imei").trim();
-            pickerDate = intent.getStringExtra("pickerDate").trim();
-            userDate = intent.getStringExtra("userDate");
 
-            parentOf_questionLayout.setVisibility(View.GONE);
-            parentOf_registrationformLayout.setVisibility(View.VISIBLE);
-            LL_banner_image.setVisibility(View.GONE);
-            Submit_btn.setVisibility(View.VISIBLE);
+            if(FROM != null && !FROM.isEmpty()) {
+            if (FROM.equals("DAYEND")) {
+                imei = intent.getStringExtra("imei").trim();
+                pickerDate = intent.getStringExtra("pickerDate").trim();
+                userDate = intent.getStringExtra("userDate");
 
+                parentOf_questionLayout.setVisibility(View.GONE);
+                parentOf_registrationformLayout.setVisibility(View.VISIBLE);
+                LL_banner_image.setVisibility(View.GONE);
+                Submit_btn.setVisibility(View.VISIBLE);
+
+            }
         }
 
     }
@@ -354,6 +373,16 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
     public void TextViewInitialize()
     {
+        textCoverage= (TextView) findViewById(R.id.textCoverage);
+        textContact= (TextView) findViewById(R.id.textContact);
+        textDob= (TextView) findViewById(R.id.textDob);
+
+        CovrageArea= (TextView) findViewById(R.id.CovrageArea);
+        ContactOnWelcome= (TextView) findViewById(R.id.ContactOnWelcome);
+        DobOnWelcome= (TextView) findViewById(R.id.DobOnWelcome);
+
+
+
         welcomeTextView= (TextView) findViewById(R.id.welcomeTextView);
         textMessage= (TextView) findViewById(R.id.textMessage);
 
@@ -1663,8 +1692,19 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     {
         if(!PersonNameAndFlgRegistered.equals("0"))
         {
-         String personName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[0];
+            String personName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[0];
             String FlgRegistered=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[1];
+
+
+            String ContactNumberFromServer=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[2];
+            String DOB=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[3];
+            String SelfieName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[4];
+            String SelfieNameURL=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[5];
+            String SalesAreaName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[6];
+
+
+
+
             welcomeTextView.setText(getResources().getString(R.string.txtWelcome)+" "+personName);
             //
            // FlgRegistered="1";
@@ -1677,6 +1717,24 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 SpannableString content1 = new SpannableString(text);
                 content1.setSpan(new UnderlineSpan(), 0, text.length(), 0);
                 text_UpdateNow.setText(content1);
+
+                CovrageArea.setVisibility(View.VISIBLE);
+                ContactOnWelcome.setVisibility(View.VISIBLE);
+                DobOnWelcome.setVisibility(View.GONE);
+                textCoverage.setVisibility(View.VISIBLE);
+                textContact.setVisibility(View.VISIBLE);
+                textDob.setVisibility(View.GONE);
+                profile_image.setVisibility(View.GONE);
+                CovrageArea.setText(SalesAreaName);
+
+
+                if(!ContactNumberFromServer.equals("0")){
+
+                    ContactOnWelcome.setText(ContactNumberFromServer);
+                }
+
+
+
             }
             if(FlgRegistered.equals("1"))
             {
@@ -1685,6 +1743,28 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 SpannableString content1 = new SpannableString(text);
                 content1.setSpan(new UnderlineSpan(), 0, text.length(), 0);
                 text_NotYou.setText(content1);
+
+                CovrageArea.setText(SalesAreaName);
+                ContactOnWelcome.setText(ContactNumberFromServer);
+                DobOnWelcome.setText(DOB);
+
+                try{
+                    String PATH = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolderServer + "/";
+
+                    File file2 = new File(PATH + SelfieName);
+                    if (file2.exists()) {
+
+                        Bitmap myBitmap = BitmapFactory.decodeFile(file2.getAbsolutePath());
+
+                        profile_image.setImageBitmap(myBitmap);
+                    }
+
+                }
+                catch (Exception e){
+
+                }
+
+
 
 
             }

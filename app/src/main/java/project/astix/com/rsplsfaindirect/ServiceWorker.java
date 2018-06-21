@@ -1,7 +1,13 @@
 package project.astix.com.rsplsfaindirect;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +36,7 @@ import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Environment;
 
 import com.astix.Common.CommonInfo;
 
@@ -897,8 +904,15 @@ public class ServiceWorker
 					String flgAppStatus="1";
 					String DisplayMessage="No Message";
 					String flgValidApplication="1";
-					String	MessageForInvalid="No Message";
-	            	
+					String MessageForInvalid="No Message";
+					String flgPersonTodaysAtt="0";
+					int PersonNodeID=0;
+					int PersonNodeType=0;
+					String ContactNo="0";
+					String DOB="0";
+					String SelfieName="0";
+					String SelfieNameURL="0";
+					String SalesAreaName="0";
 	            	
 	                Element element = (Element) tblSchemeStoreMappingNode.item(i);
 
@@ -940,11 +954,89 @@ public class ServiceWorker
 					{
 						MessageForInvalid=xmlParser.getCharacterDataFromElement(line);
 					}
+					NodeList flgPersonTodaysAttNode = element.getElementsByTagName("flgPersonTodaysAtt");
+					line = (Element) flgPersonTodaysAttNode.item(0);
+					if(flgPersonTodaysAttNode.getLength()>0)
+					{
+						flgPersonTodaysAtt=xmlParser.getCharacterDataFromElement(line);
+					}
+
+					NodeList SONodeIDNode = element.getElementsByTagName("PersonNodeID");
+					line = (Element) SONodeIDNode.item(0);
+					if(SONodeIDNode.getLength()>0)
+					{
+						PersonNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+					}
+
+					NodeList SONodeTypeNode = element.getElementsByTagName("PersonNodeType");
+					line = (Element) SONodeTypeNode.item(0);
+					if(SONodeTypeNode.getLength()>0)
+					{
+						PersonNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+					}
+					if(!element.getElementsByTagName("ContactNo").equals(null))
+					{
+						NodeList ContactNode = element.getElementsByTagName("ContactNo");
+						line = (Element) ContactNode.item(0);
+						if(ContactNode.getLength()>0)
+						{
+							ContactNo=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+
+					if(!element.getElementsByTagName("SalesAreaName").equals(null))
+					{
+						NodeList SalesAreaNameNode = element.getElementsByTagName("SalesAreaName");
+						line = (Element) SalesAreaNameNode.item(0);
+						if(SalesAreaNameNode.getLength()>0)
+						{
+							SalesAreaName=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+					if(FlgRegistered.equals("1"))
+					{
+
+						if(!element.getElementsByTagName("DOB").equals(null))
+						{
+							NodeList DOBNode = element.getElementsByTagName("DOB");
+							line = (Element) DOBNode.item(0);
+							if(DOBNode.getLength()>0)
+							{
+								DOB=xmlParser.getCharacterDataFromElement(line);
+							}
+						}
+						if(!element.getElementsByTagName("SelfieName").equals(null))
+						{
+							NodeList SelfieNameNode = element.getElementsByTagName("SelfieName");
+							line = (Element) SelfieNameNode.item(0);
+							if(SelfieNameNode.getLength()>0)
+							{
+								SelfieName=xmlParser.getCharacterDataFromElement(line);
+							}
+						}
+						if(!element.getElementsByTagName("SelfieNameURL").equals(null))
+						{
+							NodeList SelfieNameURLNode = element.getElementsByTagName("SelfieNameURL");
+							line = (Element) SelfieNameURLNode.item(0);
+							if(SelfieNameURLNode.getLength()>0)
+							{
+								SelfieNameURL=xmlParser.getCharacterDataFromElement(line);
+							}
+						}
+
+						if(SelfieNameURL!=null && SelfieName!=null){
+							if((!SelfieNameURL.equals("")) && (!SelfieName.equals("")) && (!SelfieNameURL.equals("0")) && (!SelfieName.equals("0"))){
+								downLoadingSelfieImage(SelfieNameURL,SelfieName);
+							}
+						}
 
 
+					}
 
-	               
-	                dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,PersonName,FlgRegistered,flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid);
+
+	                dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,PersonName,FlgRegistered,
+							flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid,flgPersonTodaysAtt,
+							PersonNodeID,PersonNodeType,ContactNo,DOB,SelfieName,SelfieNameURL,SalesAreaName);
 	                
 	             }
 
@@ -15593,6 +15685,10 @@ String RouteType="0";
 							String ReasonId="0";
 							String ReasonDescr="NA";
 							int FlgToShowTextBox=0;
+							int flgSOApplicable=0;
+							int flgDSRApplicable=0;
+							int flgNoVisitOption=0;
+							int SeqNo=0;
 							
 							
 							if (tableRow.hasProperty("ReasonId") ) 
@@ -15629,17 +15725,66 @@ String RouteType="0";
 									String abc = tableRow.getProperty("FlgToShowTextBox").toString().trim();
 									FlgToShowTextBox=Integer.parseInt(abc);
 								}
-							} 
+							}
+							if (tableRow.hasProperty("flgSOApplicable") )
+							{
+								if (tableRow.getProperty("flgSOApplicable").toString().isEmpty() )
+								{
+									flgSOApplicable=0;
+								}
+								else
+								{
+									flgSOApplicable=Integer.parseInt(tableRow.getProperty("flgSOApplicable").toString().trim());
+								}
+							}
+							if (tableRow.hasProperty("flgDSRApplicable") )
+							{
+								if (tableRow.getProperty("flgDSRApplicable").toString().isEmpty() )
+								{
+									flgDSRApplicable=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("flgDSRApplicable").toString().trim();
+									flgDSRApplicable=Integer.parseInt(abc);
+								}
+							}
+							if (tableRow.hasProperty("flgNoVisitOption") )
+							{
+								if (tableRow.getProperty("flgNoVisitOption").toString().isEmpty() )
+								{
+									flgNoVisitOption=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("flgNoVisitOption").toString().trim();
+									flgNoVisitOption=Integer.parseInt(abc);
+								}
+							}
+							if (tableRow.hasProperty("SeqNo") )
+							{
+								if (tableRow.getProperty("SeqNo").toString().isEmpty() )
+								{
+									SeqNo=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("SeqNo").toString().trim();
+									SeqNo=Integer.parseInt(abc);
+								}
+							}
 							
 							
 							
 							AutoIdStore= i +1;
 							
 							
-							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
-						
-							
-							
+							//dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
+							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox,flgSOApplicable,flgDSRApplicable,flgNoVisitOption,SeqNo);
+
+
+
+
 						}
 					}
 					
@@ -18601,6 +18746,58 @@ String RouteType="0";
 			flagExecutedServiceSuccesfully=0;
 			dbengine.close();
 			return setmovie;
+		}
+
+	}
+	public void downLoadingSelfieImage(String SelfieNameURL,String SelfieName){
+		String URL_String=  SelfieNameURL;
+		String Video_Name=  SelfieName;
+
+		try {
+
+			URL url = new URL(URL_String);
+			URLConnection connection = url.openConnection();
+			HttpURLConnection urlConnection = (HttpURLConnection) connection;
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoInput(true);
+			urlConnection.connect();
+			String PATH = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolderServer + "/";
+
+			File file2 = new File(PATH + Video_Name);
+			if (file2.exists()) {
+				file2.delete();
+			}
+
+			File file1 = new File(PATH);
+			if (!file1.exists()) {
+				file1.mkdirs();
+			}
+
+
+			File file = new File(file1, Video_Name);
+
+			int size = connection.getContentLength();
+
+
+			FileOutputStream fileOutput = new FileOutputStream(file);
+
+			InputStream inputStream = urlConnection.getInputStream();
+
+			byte[] buffer = new byte[size];
+			int bufferLength = 0;
+			long total = 0;
+			int current = 0;
+			while ((bufferLength = inputStream.read(buffer)) != -1) {
+				total += bufferLength;
+
+				fileOutput.write(buffer, 0, bufferLength);
+			}
+
+			fileOutput.close();
+
+		}
+		catch (Exception e){
+
 		}
 
 	}
