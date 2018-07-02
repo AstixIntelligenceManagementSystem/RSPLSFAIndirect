@@ -9,7 +9,7 @@ public class CommonInfo
 
 	// Its for Live Path on 194 Server
 
-    public static int flgAllRoutesData=1;
+  /*  public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
 	public static String clickedTagPhoto_savedInstance=null;
@@ -71,7 +71,7 @@ public class CommonInfo
 	public static int FlgDSRSO=0;
 	public static int DayStartClick=0;
 	public static String ImagesFolderServer="RSPLSFAImagesServer";
-
+*/
 
 	// Its for Test Path on 194 Server
 
@@ -141,7 +141,7 @@ public class CommonInfo
 	// Its for Dev Path on 194 Server
 
 
-	/*   public static int flgAllRoutesData=1;
+	   public static int flgAllRoutesData=1;
 	    public static File imageF_savedInstance=null;
 	    public static String imageName_savedInstance=null;
 	    public static String clickedTagPhoto_savedInstance=null;
@@ -208,7 +208,7 @@ public class CommonInfo
 	   public static String ImagesFolderServer="RSPLSFAImagesServer";
 
 
-*/
+
 
 // Its for Test Release on 194 Server
 
