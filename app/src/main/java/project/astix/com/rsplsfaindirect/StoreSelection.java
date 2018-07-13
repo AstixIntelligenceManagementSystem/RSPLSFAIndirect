@@ -102,6 +102,7 @@ import org.json.JSONObject;
 
 public class StoreSelection extends BaseActivity implements com.google.android.gms.location.LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener
 {
+	public boolean addStoreBtnClick=false;
 	public String currSysDate;
 	public int chkFlgForErrorToCloseApp=0;
 	Spinner spinner_manager;
@@ -339,7 +340,14 @@ public class StoreSelection extends BaseActivity implements com.google.android.g
 		wl.acquire();
 
 
-		pDialog2STANDBY = ProgressDialog.show(StoreSelection.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.searchingnearbystores), true);
+		if(addStoreBtnClick)
+		{
+			pDialog2STANDBY = ProgressDialog.show(StoreSelection.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.rtrvng_loc), true);
+
+		}
+		else {
+			pDialog2STANDBY = ProgressDialog.show(StoreSelection.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.searchingnearbystores), true);
+		}
 		pDialog2STANDBY.setIndeterminate(true);
 
 		pDialog2STANDBY.setCancelable(false);
@@ -355,8 +363,6 @@ public class StoreSelection extends BaseActivity implements com.google.android.g
 					.build();
 			mGoogleApiClient.connect();
 		}
-		//startService(new Intent(DynamicActivity.this, AppLocationService.class));
-
 
 		startService(new Intent(StoreSelection.this, AppLocationService.class));
 		Location nwLocation = appLocationService.getLocation(locationManager, LocationManager.GPS_PROVIDER, location);
@@ -1756,9 +1762,12 @@ public void DayEndWithoutalert()
 				public void onClick(View v) 
 				{
 					// TODO Auto-generated method stub
-					Intent intent = new Intent(StoreSelection.this, AddNewStore_DynamicSectionWise.class);
-					//Intent intent = new Intent(StoreSelection.this, Add_New_Store_NewFormat.class);
-					//Intent intent = new Intent(StoreSelection.this, Add_New_Store.class);
+					if(true)
+					{
+						addStoreBtnClick=true;
+						firstTimeLocationTrack();
+					}
+				/*	Intent intent = new Intent(StoreSelection.this, AddNewStore_DynamicSectionWise.class);
 					intent.putExtra("storeID", "0");
 					intent.putExtra("activityFrom", "StoreSelection");
 					intent.putExtra("userdate", userDate);
@@ -1766,18 +1775,9 @@ public void DayEndWithoutalert()
 					intent.putExtra("imei", imei);
 					intent.putExtra("rID", rID);
 					StoreSelection.this.startActivity(intent);
-					finish();
+					finish();*/
 					
-					/*// TODO Auto-generated method stub
-					Intent intent = new Intent(StoreSelection.this, Add_New_Store_DynamicSectionWise.class);
-					intent.putExtra("activityFrom", "StoreSelection");
-					intent.putExtra("userdate", userDate);
-					intent.putExtra("pickerDate", pickerDate);
-					intent.putExtra("imei", imei);
-					intent.putExtra("rID", rID);
-					StoreSelection.this.startActivity(intent);
-					finish();
-*/				}
+					}
 			});
 			
 			/*Button but_SalesSummray = (Button) findViewById(R.id.btnSalesSummary);
@@ -4518,57 +4518,65 @@ public void DayEndWithoutalert()
 					pDialog2STANDBY.dismiss();
 				}
 
-
-
-				int flagtoShowStorelistOrAddnewStore=dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
-
-
-				if(flagtoShowStorelistOrAddnewStore==1)
+				if(addStoreBtnClick)
 				{
-					//getDataFromDatabaseToHashmap();
-					//tl2.removeAllViews();
+					addStoreBtnClick=false;
+					Intent intent = new Intent(StoreSelection.this, AddNewStore_DynamicSectionWise.class);
+					intent.putExtra("storeID", "0");
+					intent.putExtra("activityFrom", "StoreSelection");
+					intent.putExtra("userdate", userDate);
+					intent.putExtra("pickerDate", pickerDate);
+					intent.putExtra("imei", imei);
+					intent.putExtra("rID", rID);
+					StoreSelection.this.startActivity(intent);
+					finish();
+				}
+				else
+				{
+					int flagtoShowStorelistOrAddnewStore=dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
 
-					if(tl2.getChildCount()>0){
-						tl2.removeAllViews();
-						// dynamcDtaContnrScrollview.removeAllViews();
-						//addViewIntoTable();
-						setStoresList();
-					}
-					else
+
+					if(flagtoShowStorelistOrAddnewStore==1)
 					{
-						//addViewIntoTable();
-						setStoresList();
-					}
-					if(pDialog2STANDBY!=null)
-					{
-						if (pDialog2STANDBY.isShowing())
-						{
-							pDialog2STANDBY.dismiss();
+						//getDataFromDatabaseToHashmap();
+						//tl2.removeAllViews();
+
+						if(tl2.getChildCount()>0){
+							tl2.removeAllViews();
+							// dynamcDtaContnrScrollview.removeAllViews();
+							//addViewIntoTable();
+							setStoresList();
 						}
-					}
+						else
+						{
+							//addViewIntoTable();
+							setStoresList();
+						}
+						if(pDialog2STANDBY!=null)
+						{
+							if (pDialog2STANDBY.isShowing())
+							{
+								pDialog2STANDBY.dismiss();
+							}
+						}
 
                        /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
                         LauncherActivity.this.startActivity(intent);
                         finish();*/
 
-				}
-				else
-				{
-					if(pDialog2STANDBY!=null) {
-						if (pDialog2STANDBY.isShowing()) {
-							pDialog2STANDBY.dismiss();
+					}
+					else
+					{
+						if(pDialog2STANDBY!=null) {
+							if (pDialog2STANDBY.isShowing()) {
+								pDialog2STANDBY.dismiss();
+							}
 						}
 					}
 				}
-				//send direct to dynamic page-------------------------
-               /* Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWise.class);
-                intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                StorelistActivity.this.startActivity(intent);
-                finish();*/
 
 
-				//commenting below error message
-				// showAlertForEveryOne("Please try again, No Fused,GPS or Network found.");
+
 			}
 			else
 			{
@@ -4612,14 +4620,6 @@ public void DayEndWithoutalert()
 						pDialog2STANDBY.dismiss();
 					}
 
-					//send to addstore Dynamic page direct-----------------------------
-                   /* Intent intent=new Intent(LauncherActivity.this,AddNewStore_DynamicSectionWise.class);
-                    intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                    LauncherActivity.this.startActivity(intent);
-                    finish();*/
-
-
-					//From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
 
 
 				}
@@ -4630,122 +4630,140 @@ public void DayEndWithoutalert()
 					dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
 					dbengine.close();
 
-
-					hmapOutletListForNear=dbengine.fnGetALLOutletMstr();
-					System.out.println("SHIVAM"+hmapOutletListForNear);
-					if(hmapOutletListForNear!=null)
+					if(addStoreBtnClick)
 					{
-
-						for(Map.Entry<String, String> entry:hmapOutletListForNear.entrySet())
-						{
-							int DistanceBWPoint=1000;
-							String outID=entry.getKey().toString().trim();
-							//  String PrevAccuracy = entry.getValue().split(Pattern.quote("^"))[0];
-							String PrevLatitude = entry.getValue().split(Pattern.quote("^"))[0];
-							String PrevLongitude = entry.getValue().split(Pattern.quote("^"))[1];
-
-							// if (!PrevAccuracy.equals("0"))
-							// {
-							if (!PrevLatitude.equals("0"))
-							{
-								try
-								{
-									Location locationA = new Location("point A");
-									locationA.setLatitude(Double.parseDouble(fnLati));
-									locationA.setLongitude(Double.parseDouble(fnLongi));
-
-									Location locationB = new Location("point B");
-									locationB.setLatitude(Double.parseDouble(PrevLatitude));
-									locationB.setLongitude(Double.parseDouble(PrevLongitude));
-
-									float distance = locationA.distanceTo(locationB) ;
-									DistanceBWPoint=(int)distance;
-
-									hmapOutletListForNearUpdated.put(outID, ""+DistanceBWPoint);
-								}
-								catch(Exception e)
-								{
-
-								}
+						if(pDialog2STANDBY!=null) {
+							if (pDialog2STANDBY.isShowing()) {
+								pDialog2STANDBY.dismiss();
+								pDialog2STANDBY=null;
 							}
-							// }
 						}
+						addStoreBtnClick=false;
+						Intent intent = new Intent(StoreSelection.this, AddNewStore_DynamicSectionWise.class);
+						intent.putExtra("storeID", "0");
+						intent.putExtra("activityFrom", "StoreSelection");
+						intent.putExtra("userdate", userDate);
+						intent.putExtra("pickerDate", pickerDate);
+						intent.putExtra("imei", imei);
+						intent.putExtra("rID", rID);
+						StoreSelection.this.startActivity(intent);
+						finish();
 					}
-
-					if(hmapOutletListForNearUpdated!=null)
+					else
 					{
-						dbengine.open();
-						for(Map.Entry<String, String> entry:hmapOutletListForNearUpdated.entrySet())
+						hmapOutletListForNear=dbengine.fnGetALLOutletMstr();
+						System.out.println("SHIVAM"+hmapOutletListForNear);
+						if(hmapOutletListForNear!=null)
 						{
-							String outID=entry.getKey().toString().trim();
-							String DistanceNear = entry.getValue().trim();
-							if(outID.equals("853399-a1445e87daf4-NA"))
+
+							for(Map.Entry<String, String> entry:hmapOutletListForNear.entrySet())
 							{
-								System.out.println("Shvam Distance = "+DistanceNear);
+								int DistanceBWPoint=1000;
+								String outID=entry.getKey().toString().trim();
+								//  String PrevAccuracy = entry.getValue().split(Pattern.quote("^"))[0];
+								String PrevLatitude = entry.getValue().split(Pattern.quote("^"))[0];
+								String PrevLongitude = entry.getValue().split(Pattern.quote("^"))[1];
+
+								// if (!PrevAccuracy.equals("0"))
+								// {
+								if (!PrevLatitude.equals("0"))
+								{
+									try
+									{
+										Location locationA = new Location("point A");
+										locationA.setLatitude(Double.parseDouble(fnLati));
+										locationA.setLongitude(Double.parseDouble(fnLongi));
+
+										Location locationB = new Location("point B");
+										locationB.setLatitude(Double.parseDouble(PrevLatitude));
+										locationB.setLongitude(Double.parseDouble(PrevLongitude));
+
+										float distance = locationA.distanceTo(locationB) ;
+										DistanceBWPoint=(int)distance;
+
+										hmapOutletListForNearUpdated.put(outID, ""+DistanceBWPoint);
+									}
+									catch(Exception e)
+									{
+
+									}
+								}
+								// }
 							}
-							if(!DistanceNear.equals(""))
+						}
+
+						if(hmapOutletListForNearUpdated!=null)
+						{
+							dbengine.open();
+							for(Map.Entry<String, String> entry:hmapOutletListForNearUpdated.entrySet())
 							{
-								//853399-81752acdc662-NA
+								String outID=entry.getKey().toString().trim();
+								String DistanceNear = entry.getValue().trim();
 								if(outID.equals("853399-a1445e87daf4-NA"))
 								{
 									System.out.println("Shvam Distance = "+DistanceNear);
 								}
-								dbengine.UpdateStoreDistanceNear(outID,Integer.parseInt(DistanceNear));
+								if(!DistanceNear.equals(""))
+								{
+									//853399-81752acdc662-NA
+									if(outID.equals("853399-a1445e87daf4-NA"))
+									{
+										System.out.println("Shvam Distance = "+DistanceNear);
+									}
+									dbengine.UpdateStoreDistanceNear(outID,Integer.parseInt(DistanceNear));
+								}
 							}
+							dbengine.close();
 						}
-						dbengine.close();
-					}
-					//send to storeListpage page
-					//From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
-					int flagtoShowStorelistOrAddnewStore=      dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
+						//send to storeListpage page
+						//From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
+						int flagtoShowStorelistOrAddnewStore=      dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
 
 
-					if(flagtoShowStorelistOrAddnewStore==1)
-					{
-						//getDataFromDatabaseToHashmap();
-						if(tl2.getChildCount()>0){
-							tl2.removeAllViews();
-							// dynamcDtaContnrScrollview.removeAllViews();
-							//addViewIntoTable();
-							setStoresList();
-						}
-						else
+						if(flagtoShowStorelistOrAddnewStore==1)
 						{
-							//addViewIntoTable();
-							setStoresList();
-						}
+							//getDataFromDatabaseToHashmap();
+							if(tl2.getChildCount()>0){
+								tl2.removeAllViews();
+								// dynamcDtaContnrScrollview.removeAllViews();
+								//addViewIntoTable();
+								setStoresList();
+							}
+							else
+							{
+								//addViewIntoTable();
+								setStoresList();
+							}
 
                        /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
                         LauncherActivity.this.startActivity(intent);
                         finish();*/
 
-					}
-					else
-					{
-						//send to AddnewStore directly
-                       /* Intent intent=new Intent(LauncherActivity.this,AddNewStore_DynamicSectionWise.class);
-                        intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                        LauncherActivity.this.startActivity(intent);
-                        finish();*/
-
-
-						if(tl2.getChildCount()>0){
-							tl2.removeAllViews();
-							// dynamcDtaContnrScrollview.removeAllViews();
-							//addViewIntoTable();
-							setStoresList();
 						}
 						else
 						{
-							//addViewIntoTable();
-							setStoresList();
-						}
 
+
+							if(tl2.getChildCount()>0){
+								tl2.removeAllViews();
+								// dynamcDtaContnrScrollview.removeAllViews();
+								//addViewIntoTable();
+								setStoresList();
+							}
+							else
+							{
+								//addViewIntoTable();
+								setStoresList();
+							}
+
+						}
+						if(pDialog2STANDBY.isShowing())
+						{
+							pDialog2STANDBY.dismiss();
+						}
 					}
-					if(pDialog2STANDBY.isShowing())
-					{
-						pDialog2STANDBY.dismiss();
-					}
+
+
 
 				}
                /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);

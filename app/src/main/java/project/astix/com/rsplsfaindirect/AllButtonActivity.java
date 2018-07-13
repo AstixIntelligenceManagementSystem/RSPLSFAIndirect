@@ -2292,7 +2292,8 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 dbengine.open();
                 String allLoctionDetails=  dbengine.getLocationDetails();
                 dbengine.close();
-                if(allLoctionDetails.equals("0"))
+               // if(allLoctionDetails.equals("0"))
+                if(true)
                 {
                     firstTimeLocationTrack();
                 }
@@ -2988,56 +2989,13 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 }
 
 
-
-                int flagtoShowStorelistOrAddnewStore=dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
-
-
-                if(flagtoShowStorelistOrAddnewStore==1)
+                if(pDialog2STANDBY!=null)
                 {
-                    //getDataFromDatabaseToHashmap();
-                    //tl2.removeAllViews();
-
-                    if(tl2.getChildCount()>0){
-                        tl2.removeAllViews();
-                        // dynamcDtaContnrScrollview.removeAllViews();
-                        //addViewIntoTable();
-                        setStoresList();
-                    }
-                    else
+                    if (pDialog2STANDBY.isShowing())
                     {
-                        //addViewIntoTable();
-                        setStoresList();
-                    }
-                    if(pDialog2STANDBY!=null)
-                    {
-                        if (pDialog2STANDBY.isShowing())
-                        {
-                            pDialog2STANDBY.dismiss();
-                        }
-                    }
-
-                       /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
-                        LauncherActivity.this.startActivity(intent);
-                        finish();*/
-
-                }
-                else
-                {
-                    if(pDialog2STANDBY!=null) {
-                        if (pDialog2STANDBY.isShowing()) {
-                            pDialog2STANDBY.dismiss();
-                        }
+                        pDialog2STANDBY.dismiss();
                     }
                 }
-                //send direct to dynamic page-------------------------
-               /* Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWise.class);
-                intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                StorelistActivity.this.startActivity(intent);
-                finish();*/
-
-
-                //commenting below error message
-                // showAlertForEveryOne("Please try again, No Fused,GPS or Network found.");
             }
             else
             {
@@ -3076,19 +3034,13 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                     dbengine.deleteLocationTable();
                     dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
                     dbengine.close();
-                    if(pDialog2STANDBY.isShowing())
+                    if(pDialog2STANDBY!=null)
                     {
-                        pDialog2STANDBY.dismiss();
+                        if (pDialog2STANDBY.isShowing())
+                        {
+                            pDialog2STANDBY.dismiss();
+                        }
                     }
-
-                    //send to addstore Dynamic page direct-----------------------------
-                   /* Intent intent=new Intent(LauncherActivity.this,AddNewStore_DynamicSectionWise.class);
-                    intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                    LauncherActivity.this.startActivity(intent);
-                    finish();*/
-
-
-                    //From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
 
 
                 }
@@ -3100,136 +3052,16 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                     dbengine.close();
 
 
-                    hmapOutletListForNear=dbengine.fnGetALLOutletMstr();
-                    System.out.println("SHIVAM"+hmapOutletListForNear);
-                    if(hmapOutletListForNear!=null)
+                    if(pDialog2STANDBY!=null)
                     {
-
-                        for(Map.Entry<String, String> entry:hmapOutletListForNear.entrySet())
+                        if (pDialog2STANDBY.isShowing())
                         {
-                            int DistanceBWPoint=1000;
-                            String outID=entry.getKey().toString().trim();
-                            //  String PrevAccuracy = entry.getValue().split(Pattern.quote("^"))[0];
-                            String PrevLatitude = entry.getValue().split(Pattern.quote("^"))[0];
-                            String PrevLongitude = entry.getValue().split(Pattern.quote("^"))[1];
-
-                            // if (!PrevAccuracy.equals("0"))
-                            // {
-                            if (!PrevLatitude.equals("0"))
-                            {
-                                try
-                                {
-                                    Location locationA = new Location("point A");
-                                    locationA.setLatitude(Double.parseDouble(fnLati));
-                                    locationA.setLongitude(Double.parseDouble(fnLongi));
-
-                                    Location locationB = new Location("point B");
-                                    locationB.setLatitude(Double.parseDouble(PrevLatitude));
-                                    locationB.setLongitude(Double.parseDouble(PrevLongitude));
-
-                                    float distance = locationA.distanceTo(locationB) ;
-                                    DistanceBWPoint=(int)distance;
-
-                                    hmapOutletListForNearUpdated.put(outID, ""+DistanceBWPoint);
-                                }
-                                catch(Exception e)
-                                {
-
-                                }
-                            }
-                            // }
+                            pDialog2STANDBY.dismiss();
                         }
-                    }
-
-                    if(hmapOutletListForNearUpdated!=null)
-                    {
-                        dbengine.open();
-                        for(Map.Entry<String, String> entry:hmapOutletListForNearUpdated.entrySet())
-                        {
-                            String outID=entry.getKey().toString().trim();
-                            String DistanceNear = entry.getValue().trim();
-                            if(outID.equals("853399-a1445e87daf4-NA"))
-                            {
-                                System.out.println("Shvam Distance = "+DistanceNear);
-                            }
-                            if(!DistanceNear.equals(""))
-                            {
-                                //853399-81752acdc662-NA
-                                if(outID.equals("853399-a1445e87daf4-NA"))
-                                {
-                                    System.out.println("Shvam Distance = "+DistanceNear);
-                                }
-                                dbengine.UpdateStoreDistanceNear(outID,Integer.parseInt(DistanceNear));
-                            }
-                        }
-                        dbengine.close();
-                    }
-                    //send to storeListpage page
-                    //From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
-                    int flagtoShowStorelistOrAddnewStore=      dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
-
-
-                    if(flagtoShowStorelistOrAddnewStore==1)
-                    {
-                        //getDataFromDatabaseToHashmap();
-                        if(tl2.getChildCount()>0){
-                            tl2.removeAllViews();
-                            // dynamcDtaContnrScrollview.removeAllViews();
-                            //addViewIntoTable();
-                            setStoresList();
-                        }
-                        else
-                        {
-                            //addViewIntoTable();
-                            setStoresList();
-                        }
-
-                       /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
-                        LauncherActivity.this.startActivity(intent);
-                        finish();*/
-
-                    }
-                    else
-                    {
-                        //send to AddnewStore directly
-                       /* Intent intent=new Intent(LauncherActivity.this,AddNewStore_DynamicSectionWise.class);
-                        intent.putExtra("FLAG_NEW_UPDATE","NEW");
-                        LauncherActivity.this.startActivity(intent);
-                        finish();*/
-
-
-
-/*
-                        if(tl2.getChildCount()>0){
-                            tl2.removeAllViews();
-                            // dynamcDtaContnrScrollview.removeAllViews();
-                            //addViewIntoTable();
-                            setStoresList();
-                        }
-
-                        else
-                        {
-                            //addViewIntoTable();
-                            setStoresList();
-                        }
-*/
-
-                    }
-                    if(pDialog2STANDBY.isShowing())
-                    {
-                        pDialog2STANDBY.dismiss();
                     }
 
                 }
-               /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
-               *//* intent.putExtra("FROM","SPLASH");
-                intent.putExtra("errorMessageFlag",errorMessageFlag); // 0 if no error, if error, then error message passes
-                intent.putExtra("username",username);//if error then it will 0
-                intent.putExtra("totaltarget",totaltarget);////if error then it will 0
-                intent.putExtra("todayTarget",todayTarget);//if error then it will 0*//*
-                LauncherActivity.this.startActivity(intent);
-                finish();
-*/
+
                 GpsLat="0";
                 GpsLong="0";
                 GpsAccuracy="0";
@@ -3366,281 +3198,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
 
     }
-    public void setStoresList()
-    {
 
-        dbengine.open();
-
-        //System.out.println("Arjun has rID :"+rID);
-
-        storeList = dbengine.FetchStoreList(rID);
-        storeStatus = dbengine.FetchStoreStatus(rID);
-
-        storeCloseStatus = dbengine.FetchStoreStoreCloseStatus(rID);
-
-        storeNextDayStatus = dbengine.FetchStoreStoreNextDayStatus();
-        StoreflgSubmitFromQuotation= dbengine.FetchStoreStatusflgSubmitFromQuotation();
-        hmapStoreLatLongDistanceFlgRemap=dbengine.fnGeStoreList(CommonInfo.DistanceRange);
-        dbengine.close();
-
-        storeCode = new String[storeList.length];
-        storeName = new String[storeList.length];
-
-        for (int splitval = 0; splitval <= (storeList.length - 1); splitval++)
-        {
-            StringTokenizer tokens = new StringTokenizer(String.valueOf(storeList[splitval]), "_");
-
-            storeCode[splitval] = tokens.nextToken().trim();
-            storeName[splitval] = tokens.nextToken().trim();
-
-        }
-
-
-        float density = getResources().getDisplayMetrics().density;
-
-        TableRow.LayoutParams paramRB = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,(int) (10 * density));
-
-
-
-        LayoutInflater inflater = getLayoutInflater();
-
-        for (int current = 0; current < storeList.length; current++)
-        {
-
-            final TableRow row = (TableRow) inflater.inflate(R.layout.table_row1, tl2, false);
-
-            final RadioButton rb1 = (RadioButton) row.findViewById(R.id.rg1StoreName);
-            final CheckBox check1 = (CheckBox) row.findViewById(R.id.check1);
-
-            final CheckBox check2 = (CheckBox) row.findViewById(R.id.check2);
-
-            rb1.setTag(storeCode[current]);
-            rb1.setText("  " + storeName[current]);
-            rb1.setTextSize(14.0f);
-            rb1.setChecked(false);
-
-            check1.setTag(storeCode[current]);
-            check1.setChecked(false);
-            check1.setEnabled(false);
-
-            check2.setTag(storeCode[current]);
-            check2.setChecked(false);
-            check2.setEnabled(false);
-
-            if ((storeCloseStatus[current].equals("1")))
-            {
-                check1.setChecked(true);
-            }
-
-            if ((storeNextDayStatus[current].equals("1")))
-            {
-                check2.setChecked(true);
-            }
-
-            if ((((storeStatus[current].split(Pattern.quote("~"))[0]).equals("3")) || ((storeStatus[current].split(Pattern.quote("~"))[0]).equals("4"))) && (StoreflgSubmitFromQuotation[current]).equals("0") || ((storeStatus[current].split(Pattern.quote("~"))[0]).equals("5")) || ((storeStatus[current].split(Pattern.quote("~"))[0]).equals("6")))
-            {
-                //StoreflgSubmitFromQuotation
-                rb1.setEnabled(false);
-                rb1.setTypeface(null, Typeface.BOLD);
-                rb1.setTextColor(this.getResources().getColor(R.color.green_submitted));
-            }
-            else
-            {
-            }
-
-            if (((storeStatus[current].split(Pattern.quote("~"))[0]).equals("1")))
-            {
-                if((storeStatus[current].split(Pattern.quote("~"))[1]).equals("1"))
-                {
-                    rb1.setTypeface(null, Typeface.BOLD);
-                    rb1.setTextColor(Color.BLUE);
-                }
-                else
-                {
-                    rb1.setTypeface(null, Typeface.BOLD);
-                    rb1.setTextColor(Color.RED);
-                }
-            }
-
-
-
-            rb1.setOnClickListener(new View.OnClickListener()
-            {
-
-                @Override
-                public void onClick(View arg0) {
-
-                    for (int xc = 0; xc < storeList.length; xc++)
-                    {
-                        TableRow dataRow = (TableRow) tl2.getChildAt(xc);
-
-                        RadioButton child1;
-                        CheckBox child2;
-                        CheckBox child3;
-
-                        child1 = (RadioButton)dataRow.findViewById(R.id.rg1StoreName);
-                        child2 = (CheckBox)dataRow.findViewById(R.id.check1);
-                        child3 = (CheckBox)dataRow.findViewById(R.id.check2);
-
-
-                        child1.setChecked(false);
-                        child2.setEnabled(false);
-                        child3.setEnabled(false);
-
-                    }
-
-                    check1.setEnabled(true);
-                    check2.setEnabled(true);
-
-                    selStoreID = arg0.getTag().toString();
-
-                    dbengine.open();
-                    selStoreName=dbengine.FetchStoreName(selStoreID);
-                    dbengine.close();
-
-                    RadioButton child2get12 = (RadioButton) arg0;
-                    child2get12.setChecked(true);
-                    check1.setOnClickListener(new View.OnClickListener()
-                    {
-
-                        @Override
-                        public void onClick(View v)
-                        {
-                            // TODO Auto-generated method stub
-                            int checkStatus = 0;
-                            CheckBox child2get = (CheckBox) v;
-                            String Sid = v.getTag().toString().trim();
-                            boolean ch = false;
-                            ch = child2get.isChecked();
-                            if ((ch == true))
-                            {
-                                // checkStatus=1;
-                                //System.out.println("1st checked  with Store ID :"+ Sid);
-                                long syncTIMESTAMP = System.currentTimeMillis();
-                                Date dateobj = new Date(syncTIMESTAMP);
-                                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
-                                String startTS = df.format(dateobj);
-
-                                Date currDate = new Date();
-                                SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-                                String currSysDate = currDateFormat.format(currDate).toString();
-
-                                if (!currSysDate.equals(fDate))
-                                {
-                                    fullFileName1 = fDate + " 12:00:00";
-                                }
-                                dbengine.open();
-                                dbengine.updateCloseflg(Sid, 1);
-                               // System.out.println("DateTimeNitish 1");
-                                dbengine.UpdateStoreStartVisit(selStoreID,startTS);
-                                // dbengine.UpdateStoreEndVisit(selStoreID,
-                                // fullFileName1);
-
-                                //dbengine.UpdateStoreActualLatLongi(selStoreID,"" + "0.00", "" + "0.00", "" + "0.00","" + "NA");
-
-                                String passdLevel = battLevel + "%";
-                                dbengine.UpdateStoreVisitBatt(selStoreID,passdLevel);
-
-                                dbengine.UpdateStoreEndVisit(selStoreID,startTS);
-                                dbengine.close();
-
-                            } else {
-                                //System.out.println("1st unchecked with Store ID :"+ Sid);
-                                dbengine.open();
-                                dbengine.updateCloseflg(Sid, 0);
-                                //dbengine.delStoreCloseNextData(selStoreID);
-
-                                //dbengineUpdateCloseNextStoreData(Sid);
-
-								/*dbengine.UpdateStoreStartVisit(selStoreID,"");
-								dbengine.UpdateStoreActualLatLongi(selStoreID,"" + "", "" + "", "" + "","" + "");
-								dbengine.UpdateStoreVisitBatt(selStoreID,"");
-								dbengine.UpdateStoreEndVisit(selStoreID,"");*/
-
-                                dbengine.close();
-                            }
-
-                        }
-                    });
-
-                    check2.setOnClickListener(new View.OnClickListener()
-                    {
-
-                        @Override
-                        public void onClick(View v)
-                        {
-                            // TODO Auto-generated method stub
-                            int checkStatus = 0;
-                            CheckBox child2get = (CheckBox) v;
-                            boolean ch = false;
-                            ch = child2get.isChecked();
-                            String Sid = v.getTag().toString().trim();
-                            if ((ch == true)) {
-                                // checkStatus=1;
-                                //System.out.println("2nd checked with Store ID :"+ Sid);
-                                long syncTIMESTAMP = System.currentTimeMillis();
-                                Date dateobj = new Date(syncTIMESTAMP);
-                                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
-                                String startTS = df.format(dateobj);
-
-                                Date currDate = new Date();
-                                SimpleDateFormat currDateFormat = new SimpleDateFormat(
-                                        "dd-MMM-yyyy",Locale.ENGLISH);
-                                String currSysDate = currDateFormat.format(
-                                        currDate).toString();
-
-                                if (!currSysDate.equals(fDate)) {
-                                    fullFileName1 = fDate + " 12:00:00";
-                                }
-                                dbengine.open();
-                                System.out.println("DateTimeNitish2");
-                                dbengine.updateNextDayflg(Sid, 1);
-
-                                dbengine.UpdateStoreStartVisit(selStoreID,
-                                        startTS);
-                                // dbengine.UpdateStoreEndVisit(selStoreID,
-                                // fullFileName1);
-
-                                //dbengine.UpdateStoreActualLatLongi(selStoreID,"" + "0.00", "" + "0.00", "" + "0.00","" + "NA");
-
-                                String passdLevel = battLevel + "%";
-                                dbengine.UpdateStoreVisitBatt(selStoreID,
-                                        passdLevel);
-
-                                dbengine.UpdateStoreEndVisit(selStoreID,
-                                        startTS);
-
-                                dbengine.close();
-
-                            } else {
-                                System.out
-                                        .println("2nd unchecked with Store ID :"
-                                                + Sid);
-                                dbengine.open();
-                                dbengine.updateNextDayflg(Sid, 0);
-                                //dbengine.delStoreCloseNextData(selStoreID);
-
-                                //dbengine.UpdateCloseNextStoreData(Sid);
-
-								/*dbengine.UpdateStoreStartVisit(selStoreID,"");
-								dbengine.UpdateStoreActualLatLongi(selStoreID,"" + "", "" + "", "" + "","" + "");
-								dbengine.UpdateStoreVisitBatt(selStoreID,"");
-								dbengine.UpdateStoreEndVisit(selStoreID,"");*/
-
-                                dbengine.close();
-                            }
-
-                        }
-                    });
-
-                }
-            });
-
-
-            tl2.addView(row);
-
-        }
-    }
     public String getAddressForDynamic(String latti,String longi){
 
 

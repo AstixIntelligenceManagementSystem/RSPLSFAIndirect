@@ -205,13 +205,12 @@ public class CommonInfo
         public static int flgDataScope=0;
         public static int FlgDSRSO=0;
         public static int DayStartClick=0;
-	   public static String ImagesFolderServer="RSPLSFAImagesServer";
+	    public static String ImagesFolderServer="RSPLSFAImagesServer";
 
 
 
 
 // Its for Test Release on 194 Server
-
 
 
 
@@ -282,6 +281,8 @@ public class CommonInfo
 	public static int FlgDSRSO=0;
 	public static int DayStartClick=0;
 	public static String ImagesFolderServer="RSPLSFAImagesServer";
+
+
 
 */
 
