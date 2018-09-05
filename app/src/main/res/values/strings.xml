@@ -3,18 +3,20 @@
  <!--<string name="app_name">RSPL SFA</string>-->
    <!-- <string name="app_name">RSPL SFA Stagging</string>-->
  <!-- <string name="app_name">RSPL SFA Test</string>-->
-    <string name="app_name">RSPL SFA Dev</string>
-  <!--<string name="app_name">RSPL SFA Test Release</string>-->
+   <!-- <string name="app_name">RSPL SFA Dev</string>-->
+ <string name="app_name">RSPL SFA Test Release</string>
 
   <!-- <string name="app_name">RSPL SFA Training</string>-->
 
 
+    <string name="specifyDBRName">Please Specify Distributor Name, to proceed.</string>
+    <string name="specifyLocatione">Please Specify Other Location, to proceed.</string>
 
-
+    <string name="genTermFetchingTime">Fetching Current Time..</string>
     <string name="DSR_Profile">DSR Profile</string>
     <string name="selectAtleastOneOption">Please Select atleast one option to proceed.</string>
     <string name="selectAtleastOneOptionwithedittext">Please Specify the reason first to proceed.</string>
-
+    <string name="other_loc">Please Specify : </string>
     <string name="today_working">Today Working</string>
     <string name="today_Notworking">Not Working</string>
     <string name="select_attendance_scope">View Attendance Report</string>
@@ -22,7 +24,8 @@
     <string name="selectDistributorProceeds">Please select Distributor to Proceed.</string>
     <string name="dsr_profile">DSR Profile</string>
 
-
+    <string name="selectReasonForLate">To proceed, please select a reason why you were late.</string>
+    <string name="selectOtherReasonForLate">To proceed, please specify other reason why you were late.</string>
     <string name="working">Working</string>
     <string name="not_working">Not Working</string>
 

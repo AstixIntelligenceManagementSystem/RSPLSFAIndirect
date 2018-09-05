@@ -5830,7 +5830,7 @@ String RouteType="0";
 				                {
 									
 				                	ProductRLP=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
-				                	ProductRLP=Double.parseDouble(decimalFormat.format(ProductMRP));
+				                	ProductRLP=Double.parseDouble(decimalFormat.format(ProductRLP));
 				                }
 			            	 }
 						
@@ -5844,7 +5844,7 @@ String RouteType="0";
 				                {
 									
 				                	ProductTaxAmount=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
-				                	ProductTaxAmount=Double.parseDouble(decimalFormat.format(ProductMRP));
+				                	ProductTaxAmount=Double.parseDouble(decimalFormat.format(ProductTaxAmount));
 				                }
 			            	 }
 						
@@ -15689,6 +15689,7 @@ String RouteType="0";
 							int flgDSRApplicable=0;
 							int flgNoVisitOption=0;
 							int SeqNo=0;
+							int flgDelayedReason=0;
 							
 							
 							if (tableRow.hasProperty("ReasonId") ) 
@@ -15773,6 +15774,18 @@ String RouteType="0";
 									SeqNo=Integer.parseInt(abc);
 								}
 							}
+							if (tableRow.hasProperty("flgDelayedReason") )
+							{
+								if (tableRow.getProperty("flgDelayedReason").toString().isEmpty() )
+								{
+									flgDelayedReason=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("flgDelayedReason").toString().trim();
+									flgDelayedReason=Integer.parseInt(abc);
+								}
+							}
 							
 							
 							
@@ -15780,7 +15793,7 @@ String RouteType="0";
 							
 							
 							//dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
-							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox,flgSOApplicable,flgDSRApplicable,flgNoVisitOption,SeqNo);
+							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox,flgSOApplicable,flgDSRApplicable,flgNoVisitOption,SeqNo,flgDelayedReason);
 
 
 
@@ -18800,5 +18813,104 @@ String RouteType="0";
 
 		}
 
+	}
+
+	public String getCurrentDateTime(String uuid,int DatabaseVersion,int ApplicationID)
+	{
+
+
+		String serverTime="";
+		decimalFormat.applyPattern(pattern);
+
+		int chkTblStoreListContainsRow=1;
+		StringReader read;
+		InputSource inputstream;
+		final String SOAP_ACTION = "http://tempuri.org/GetServerTime";
+		final String METHOD_NAME = "GetServerTime";
+		//final String METHOD_NAME = "GetIMEIVersionDetailStatusNewTest";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+
+		SoapObject table = null; // Contains table of dataset that returned
+
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+		sse.dotNet = true;
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+
+		try
+		{
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+			client.addProperty("uuid", uuid.toString());
+			client.addProperty("DatabaseVersion", DatabaseVersion);
+			client.addProperty("ApplicationID", ApplicationID);
+
+			sse.setOutputSoapObject(client);
+			sse.bodyOut = client;
+			androidHttpTransport.call(SOAP_ACTION, sse);
+			responseBody = (SoapObject)sse.bodyIn;
+			int totalCount = responseBody.getPropertyCount();
+
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+
+
+
+
+
+
+
+
+
+
+			NodeList tblBloodGroupNode = doc.getElementsByTagName("tblServerTime");
+
+
+
+
+			Element element = (Element) tblBloodGroupNode.item(0);
+
+			NodeList BloddGroupsNode = element.getElementsByTagName("ServerTime");
+			Element line = (Element) BloddGroupsNode.item(0);
+			if(BloddGroupsNode.getLength()>0)
+			{
+				serverTime=xmlParser.getCharacterDataFromElement(line);
+			}
+
+
+
+
+
+
+
+
+
+
+			return serverTime;
+		}
+		catch (Exception e)
+		{
+
+
+
+			return serverTime;
+		}
 	}
 }

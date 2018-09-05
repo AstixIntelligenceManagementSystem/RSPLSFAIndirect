@@ -131,12 +131,12 @@ public class SplashScreen extends BaseActivity
 
         //  imei="864215030472491";  // Hard code imei given to Alok Sir
 
-        //  imei="863661037439754";  // Training imei
+        // imei="865115032866790";  // Training imei
 
-        imei="353202065143237";    // Development Imei
+//        imei="353202065143237";    // Development Imei
         //  imei="865404034791887";
        // imei="354010084603910";  // test release
-       // imei="354010084603910"; // test release
+       imei="354010084603910"; // test release
 
 
       //  imei="359632061313398";
@@ -1027,8 +1027,9 @@ public class SplashScreen extends BaseActivity
                             if(chkFlgForErrorToCloseApp==0)
                             {
                                 chkFlgForErrorToCloseApp=1;
-                                Toast.makeText(getApplicationContext(),getResources().getString(R.string.routeNoAvail),Toast.LENGTH_SHORT).show();
 
+                                Toast.makeText(getApplicationContext(),getResources().getString(R.string.routeNoAvail),Toast.LENGTH_SHORT).show();
+                                break;
                             }
 
                         }
@@ -1048,6 +1049,7 @@ public class SplashScreen extends BaseActivity
                             if(chkFlgForErrorToCloseApp==0)
                             {
                                 chkFlgForErrorToCloseApp=1;
+                                break;
                             }
 
                         }
@@ -1070,6 +1072,7 @@ public class SplashScreen extends BaseActivity
                                 if(chkFlgForErrorToCloseApp==0)
                                 {
                                     chkFlgForErrorToCloseApp=1;
+                                    break;
                                 }
 
                             }
@@ -1141,8 +1144,9 @@ public class SplashScreen extends BaseActivity
             if(chkFlgForErrorToCloseApp==1)
             {
                 chkFlgForErrorToCloseApp=0;
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.errorFetchData),Toast.LENGTH_LONG).show();
-                finish();
+                showAlertForEveryOne(getString(R.string.errorFetchData));
+               // Toast.makeText(getApplicationContext(),getResources().,Toast.LENGTH_LONG).show();
+               // finish();
             }
 
             else
@@ -1169,7 +1173,11 @@ public class SplashScreen extends BaseActivity
                             {
                                 if(!sPrefAttandance.contains("AttandancePref"))
                                 {
-                                    callDayStartActivity();
+                                    //callDayStartActivity();
+                                    Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
+                                    i.putExtra("IntentFrom", "SPLASH");
+                                    startActivity(i);
+                                    finish();
                                 }
                                 else
                                 {
@@ -1193,13 +1201,17 @@ public class SplashScreen extends BaseActivity
 
                                 if(!sPrefAttandance.contains("AttandancePref"))
                                 {
-                                    callDayStartActivity();
-                                }
-                                else
-                                {
+                                    //callDayStartActivity();
                                     Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
                                     i.putExtra("IntentFrom", "SPLASH");
                                     startActivity(i);
+                                    finish();
+                                }
+                                else
+                                {
+                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    intent.putExtra("imei", imei);
+                                    SplashScreen.this.startActivity(intent);
                                     finish();
                                 }
                             }
@@ -1209,13 +1221,17 @@ public class SplashScreen extends BaseActivity
                             sPref.edit().putString("DatePref", serverDateForSPref).commit();
                             if(!sPrefAttandance.contains("AttandancePref"))
                             {
-                                callDayStartActivity();
-                            }
-                            else
-                            {
+                                //callDayStartActivity();
                                 Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
                                 i.putExtra("IntentFrom", "SPLASH");
                                 startActivity(i);
+                                finish();
+                            }
+                            else
+                            {
+                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                intent.putExtra("imei", imei);
+                                SplashScreen.this.startActivity(intent);
                                 finish();
                             }
                         }

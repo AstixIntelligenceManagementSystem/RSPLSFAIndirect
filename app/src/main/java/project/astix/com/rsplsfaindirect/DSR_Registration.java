@@ -154,19 +154,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     SharedPreferences sPrefAttandance;
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(CommonInfo.DayStartClick==2)
-        {
-            SharedPreferences.Editor editor1=sPrefAttandance.edit();
-            editor1.clear();
-            editor1.commit();
-            CommonInfo.DayStartClick=0;
-            finish();
 
-        }
-    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) // Control the PDA
     // Native Button
@@ -414,11 +402,19 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         text_Daystart= (TextView) findViewById(R.id.text_Daystart);
         text_Daystart.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
-                i.putExtra("IntentFrom", 0);
-                startActivity(i);
-                finish();
+            public void onClick(View v)
+            {
+                if(!sPrefAttandance.contains("AttandancePref"))
+                {
+                    callDayStartActivity();
+
+                }
+                else {
+                    Intent i = new Intent(DSR_Registration.this, SalesValueTarget.class);
+                    i.putExtra("IntentFrom", 0);
+                    startActivity(i);
+                    finish();
+                }
 
             }
         });
@@ -856,16 +852,76 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 //deleting image from image folder
                 deletingPreviousImage();
 
-                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                if(FROM.equals("DAYEND"))
+                {
+                    Intent trans2storeList = new Intent(DSR_Registration.this, StoreSelection.class);
+                    trans2storeList.putExtra("imei", imei);
+                    trans2storeList.putExtra("userDate", userDate);
+                    trans2storeList.putExtra("pickerDate", pickerDate);
+
+                    startActivity(trans2storeList);
+                    finish();
+                }
+                else if(FROM.equals("AllButtonActivity")){
+                    Intent trans2storeList = new Intent(DSR_Registration.this, AllButtonActivity.class);
+                    trans2storeList.putExtra("imei", imei);
+                    trans2storeList.putExtra("userDate", userDate);
+                    trans2storeList.putExtra("pickerDate", pickerDate);
+
+                    startActivity(trans2storeList);
+                    finish();
+                }
+                else
+                {
+                    if(!sPrefAttandance.contains("AttandancePref"))
+                    {
+                        callDayStartActivity();
+
+                    }
+                    else{
+                        Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                        i.putExtra("IntentFrom", 0);
+                        startActivity(i);
+                        finish();
+                    }
+
+                }
+
+
+                /*Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
                 i.putExtra("IntentFrom", 0);
                 startActivity(i);
-                finish();
+                finish();*/
 
             }
         });
 
 
    }
+
+    public void callDayStartActivity()
+    {
+        dbengine.open();
+        int flgPersonTodaysAtt=dbengine.FetchflgPersonTodaysAtt();
+        dbengine.close();
+
+        if(flgPersonTodaysAtt==0)
+        {
+            Intent intent=new Intent(this,DayStartActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Intent intent = new Intent(DSR_Registration.this, AllButtonActivity.class);
+            intent.putExtra("imei", imei);
+            DSR_Registration.this.startActivity(intent);
+            finish();
+        }
+
+
+    }
+
     public boolean isOnline()
     {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1583,92 +1639,93 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     }
 
       public boolean validate()
-       {
-           String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-           String mail=editText_emailID.getText().toString().trim();
+    {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        String mail=editText_emailID.getText().toString().trim();
 
-           if(ET_firstname.getText().toString().trim().equals(""))
-           {
+        if(ET_firstname.getText().toString().trim().equals(""))
+        {
 
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateFirstName));
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateFirstName));
 
-               return false;
-           }
-           else if(ET_lastname.getText().toString().trim().equals(""))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateLastName));
+            return false;
+        }
+        else if(ET_lastname.getText().toString().trim().equals(""))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateLastName));
 
-               return false;
-           }
+            return false;
+        }
 
-           else if( ET_contact_no.getText().toString().trim().equals("0000000000") || ET_contact_no.getText().toString().trim().equals("") || ET_contact_no.getText().toString().trim().length()<10)
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateContactNo));
+        else if( ET_contact_no.getText().toString().trim().equals("0000000000") || ET_contact_no.getText().toString().trim().equals("") || ET_contact_no.getText().toString().trim().length()<10)
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateContactNo));
 
-               return false;
-           }
-           else if(Text_Dob.getText().toString().trim().equals("Select Date"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
+            return false;
+        }
+        else if(Text_Dob.getText().toString().trim().equals(getResources().getString(R.string.txtSelectDate)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
 
-               return false;
-           }
-           else if(!radio_Male.isChecked() && !radio_Female.isChecked())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateSelectSex));
+            return false;
+        }
+        else if(!radio_Male.isChecked() && !radio_Female.isChecked())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateSelectSex));
 
-               return false;
-           }
-           else if(!radio_married.isChecked() && !radio_unmarried.isChecked())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateMaritalStatus));
+            return false;
+        }
+        else if(!radio_married.isChecked() && !radio_unmarried.isChecked())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateMaritalStatus));
 
-               return false;
-           }
-           else if(radio_married.isChecked() && Text_married_date.getText().toString().trim().equals("Select Date") )
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateMarriedDate));
+            return false;
+        }
+        else if(radio_married.isChecked() && Text_married_date.getText().toString().trim().equals(getResources().getString(R.string.txtSelectDate)) )
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateMarriedDate));
 
-               return false;
-           }
-           else if(spinnerQualification.getText().toString().trim().equals("Select"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateQualification));
+            return false;
+        }
+        else if(spinnerQualification.getText().toString().trim().equals(getResources().getString(R.string.txtSelect)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateQualification));
 
-               return false;
-           }
-           else if(hmapImageData.isEmpty())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateUpdatePhoto));
+            return false;
+        }
+        else if(hmapImageData.isEmpty())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateUpdatePhoto));
 
-               return false;
-           }
-           else if(!editText_emailID.getText().toString().trim().equals("") && !mail.matches(emailPattern))
-           {
+            return false;
+        }
+        else if(!editText_emailID.getText().toString().trim().equals("") && !mail.matches(emailPattern))
+        {
 
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateEmailID));
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateEmailID));
 
 
-               return false;
-           }
-           else if(spinner_bloodgrp.getText().toString().trim().equals("Select"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateBloodGroup));
+            return false;
+        }
+        else if(spinner_bloodgrp.getText().toString().trim().equals(getResources().getString(R.string.txtSelect)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateBloodGroup));
 
-               return false;
-           }
-           else if(!signOrNot)
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateSignature));
+            return false;
+        }
+        else if(!signOrNot)
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateSignature));
 
-               return false;
-           }
+            return false;
+        }
 
-           else{
-               return true;
-           }
+        else{
+            return true;
+        }
 
-       }
+    }
+
     public void showAlertForEveryOne(String msg)
     {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(DSR_Registration.this);
@@ -2054,6 +2111,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
        dbengine.savetblDsrRegDetails(IMEI_string,ClickedDateTime_string,FirstName_string,LastName_string,ContactNo_string,DOB_string,Sex_string,MaritalStatus_string,MarriedDate_string,Qualification_string,SelfieName_string,SelfiePath_string,EmailID_string,BloodGroup_string,SignName_string,SignPath_string,3,PhotoName_string,PersonNodeId_string,PersonNodeType_string);
        dbengine.close();
        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
        if(FROM.equals("DAYEND"))
        {
            Intent trans2storeList = new Intent(DSR_Registration.this, StoreSelection.class);
@@ -2064,12 +2122,32 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
            startActivity(trans2storeList);
            finish();
        }
+       else if(FROM.equals("AllButtonActivity")){
+           Intent trans2storeList = new Intent(DSR_Registration.this, AllButtonActivity.class);
+           trans2storeList.putExtra("imei", imei);
+           trans2storeList.putExtra("userDate", userDate);
+           trans2storeList.putExtra("pickerDate", pickerDate);
+
+           startActivity(trans2storeList);
+           finish();
+       }
        else
        {
-           Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+           if(!sPrefAttandance.contains("AttandancePref"))
+           {
+               callDayStartActivity();
+
+           }
+           else{
+               Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+               i.putExtra("IntentFrom", 0);
+               startActivity(i);
+               finish();
+           }
+          /* Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
            i.putExtra("IntentFrom", 0);
            startActivity(i);
-           finish();
+           finish();*/
        }
 
    }
@@ -2173,10 +2251,21 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                         public void onClick(DialogInterface dialog, int which)
                         {
                             dialog.dismiss();
-                            Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                            if(!sPrefAttandance.contains("AttandancePref"))
+                            {
+                                callDayStartActivity();
+
+                            }
+                            else{
+                                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                                i.putExtra("IntentFrom", 0);
+                                startActivity(i);
+                                finish();
+                            }
+                           /* Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
                             i.putExtra("IntentFrom", 0);
                             startActivity(i);
-                            finish();
+                            finish();*/
 
                         }
                     });

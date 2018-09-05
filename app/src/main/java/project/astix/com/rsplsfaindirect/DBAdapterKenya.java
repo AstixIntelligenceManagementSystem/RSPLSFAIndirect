@@ -55,7 +55,7 @@ public class DBAdapterKenya
             "FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null," +
             "Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null," +
             "flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null,flgRestart int null," +
-            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null,DistributorId text null,DistributorNodeType text null,DistributorName text null);";
+            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null,DistributorId text null,DistributorNodeType text null,DistributorName text null,ServerTimeValidation text null,SubmitTime text null,ReasonForLate text null,OtherReasonForLate text null);";
 
 
     private static final String DATABASE_TABLE_tblLastOutstanding = "tblLastOutstanding";
@@ -187,7 +187,9 @@ public class DBAdapterKenya
     private static final String TABLE_tblNotificationMstr_Definition = "create table tblNotificationMstr (SerialNo int null,IMEI text null, Noti_text text null,Noti_DateTime text null,Noti_ReadStatus int null,Noti_NewOld int null,Noti_ReadDateTime text null,Sstat int null,MsgServerID int null);";
 
 	private static final String TABLE_tblNoVisitReasonMaster_Define = "tblNoVisitReasonMaster";
-    private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null);";
+    private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null,flgDelayedReason int null);";
+
+   // private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null);";
 
    // private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";
 
@@ -3182,7 +3184,7 @@ db.execSQL("Update tblStoreProductClassificationTypeListMstr Set SubCategoryValu
 			   }
 
 			//saveSOAPdataStoreList = DBR,flgRetailerCredit
-			saveSOAPdataStoreListNewStore(StoreID, ""+StoreTypeId, StoreName, Double.parseDouble(ActualLatitude.trim()), Double.parseDouble(ActualLongitude.trim()), "", "", prevDate2Send, MaxAutoStore,Sstat,Accuracy.trim(),LocProvider.trim(),RouteID,RouteNodeType,BatteryStatus,IsNewStoreDataCompleteSaved,fetchAddress,PaymentStage,flgHasQuote,flgAllowQuotation,flgSubmitFromQuotation,flgGSTCapture,flgGSTCompliance,GSTNumber,flgGSTRecordFromServer,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder,StoreCity,StorePinCode,StoreState,DBR, CityId, StateId,
+			saveSOAPdataStoreListNewStore(StoreID, ""+StoreTypeId, StoreName, ActualLatitude.trim(), ActualLongitude.trim(), "", "", prevDate2Send, MaxAutoStore,Sstat,Accuracy.trim(),LocProvider.trim(),RouteID,RouteNodeType,BatteryStatus,IsNewStoreDataCompleteSaved,fetchAddress,PaymentStage,flgHasQuote,flgAllowQuotation,flgSubmitFromQuotation,flgGSTCapture,flgGSTCompliance,GSTNumber,flgGSTRecordFromServer,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder,StoreCity,StorePinCode,StoreState,DBR, CityId, StateId,
                      MapAddress, MapCity, MapPinCode, MapState); // in last parameter Fdate
 			
 			//saveSOAPdataStoreListNewStore(strGetMaxIDForNewStore.trim(), StoreType.trim(), RetailerName.trim(), Double.parseDouble(ActualLatitude), Double.parseDouble(ActualLongitude), "", "", fDate, MaxAutoStore,1,Accuracy,LocProvider,activeRid,BateryLevel); // in last parameter Fdate
@@ -16354,7 +16356,7 @@ close();
 //	saveSOAPdataStoreList
 
 	public long saveSOAPdataStoreListNewStore(String sCode, String sType, String sName,
-											  Double sLat, Double sLon, String LVdate, String LTdate,
+											  String sLat, String sLon, String LVdate, String LTdate,
 											  String sForDate, int AutoIdStore, int newStat, String Accuracy, String LocProvider,
 											  String activeRid,String RouteNodeType,String BateryLevel,int IsNewStoreDataCompleteSaved,String fetchAddress,
 											  String PaymentStage,int flgHasQuote,int flgAllowQuotation,int flgSubmitFromQuotation
@@ -21827,7 +21829,7 @@ open();
 						}*/
                      public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,
                                                             int FlgToShowTextBox,int flgSOApplicable,int flgDSRApplicable,
-                                                            int flgNoVisitOption,int SeqNo)
+                                                            int flgNoVisitOption,int SeqNo,int flgDelayedReason)
                      {
 
                          ContentValues initialValues = new ContentValues();
@@ -21840,6 +21842,7 @@ open();
                          initialValues.put("flgDSRApplicable", flgDSRApplicable);
                          initialValues.put("flgNoVisitOption", flgNoVisitOption);
                          initialValues.put("SeqNo", SeqNo);
+                         initialValues.put("flgDelayedReason", flgDelayedReason);
 
 
                          return db.insert(TABLE_tblNoVisitReasonMaster_Define, null, initialValues);
@@ -27785,7 +27788,9 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 
 
 		initialValues.put("Sstat", Sstat);
+        insertDistributorStock(ProductID,EnteredValue.trim(), "0-"+DistribtrId+"-"+DistributorNodeType);
 		return db.insert(TABLE_tblDistributorSavedData, null, initialValues);
+
 	}
 
 
@@ -29137,7 +29142,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 	//(PrdctId text not null,OrderQntty text ,DistributorNodeIdNodeType text null);";
 	public void insertDistributorStock(String prdctId,String stockQntty,String distributorNodeIdNodeType)
 	{
-		open();
+		//open();
 
 		ContentValues  values=new ContentValues();
 		values.put("PrdctId",prdctId);
@@ -29151,12 +29156,12 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 
 
 		db.insert(DATABASE_TABLE_DISTRIBUTOR_STOCK,null,values);
-		close();
+	//	close();
 	}
 
 	public void updateOriginalStock(LinkedHashMap<String,Integer> hmapProductStock,String distId)
 	{
-		open();
+		//open();
 		for(Map.Entry<String,Integer> entry:hmapProductStock.entrySet())
 		{
 			ContentValues values=new ContentValues();
@@ -29165,7 +29170,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 			db.update(DATABASE_TABLE_DISTRIBUTOR_STOCK,values,"DistributorNodeIdNodeType=? AND PrdctId=?", new String[]{distId,entry.getKey()});
 		}
 
-		close();
+		//close();
 	}
 
 	public void insertDistributorLeftOrderId(String distributorNodeIdNodeType,String orderId)
@@ -31712,8 +31717,9 @@ open();
     public LinkedHashMap<Integer, String> fetch_Reason_List_for_option()
     {
         open();
+        //tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null,flgDelayedReason int null);";
         LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
-        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgNoVisitOption='"+0+"' order by SeqNo asc",null);
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgNoVisitOption='"+0+"' and flgDelayedReason='"+0+"' and ReasonId<>'15' order by SeqNo asc",null);
         try
         {
             if(cursor.getCount()>0)
@@ -31745,7 +31751,7 @@ open();
     {
         open();
         LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
-        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgNoVisitOption="+1,null);
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgNoVisitOption="+1+" and flgDelayedReason='"+0+"'" ,null);
         try
         {
             if(cursor.getCount()>0)
@@ -31776,6 +31782,39 @@ open();
     }
 
     public void updatetblAttandanceDetails(String OptionID,String OptionDesc,String ReasonID,String ReasonDesc,
+                                           String Comment,String DistributorId,String DistributorNodeType,String DistributorName,String serverTime,String submitTime,String rsnForLate,String otherReasonForLate )
+    {
+        open();
+        try {
+
+
+            ContentValues values=new ContentValues();
+            values.put("OptionID",OptionID.trim());
+            values.put("OptionDesc",OptionDesc.trim());
+            values.put("ReasonID",ReasonID.trim());
+            values.put("ReasonDesc",ReasonDesc);
+            values.put("Comment",Comment);
+
+            values.put("DistributorId",DistributorId.trim());
+            values.put("DistributorNodeType",DistributorNodeType);
+            values.put("DistributorName",DistributorName);
+
+            values.put("ServerTimeValidation",serverTime);
+            values.put("SubmitTime",submitTime);
+            values.put("ReasonForLate",rsnForLate);
+            values.put("OtherReasonForLate",otherReasonForLate);
+
+            db.update(TABLE_tblAttandanceDetails,values,"",new String[]{});
+        }catch(SQLiteException exception)
+        {
+            System.out.println();
+        }finally
+        {
+            close();
+        }
+
+    }
+   /* public void updatetblAttandanceDetails(String OptionID,String OptionDesc,String ReasonID,String ReasonDesc,
                                            String Comment,String DistributorId,String DistributorNodeType,String DistributorName )
     {
         open();
@@ -31802,7 +31841,7 @@ open();
             close();
         }
 
-    }
+    }*/
 
     public long savetblAttandanceDetails(String AttandanceTime,String PersonNodeID,String  PersonNodeType ,String PersonName ,
                                          String OptionID,String OptionDesc ,String ReasonID,String ReasonDesc,
@@ -32043,6 +32082,76 @@ open();
             String ex1=ex.getMessage();
         }
         finally {
+            close();
+        }
+    }
+
+
+
+    public ArrayList<String> fetch_Text_To_Show()
+    {
+        open();
+        ArrayList<String> listTxtBxToShow = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and FlgToShowTextBox='"+1+"' order by SeqNo asc",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        listTxtBxToShow.add(cursor.getString(0).toString().trim());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return listTxtBxToShow;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+
+    public LinkedHashMap<String, String> fetch_Reason_Late()
+    {
+        open();
+        LinkedHashMap<String, String> hmapCatgry = new LinkedHashMap<>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgDelayedReason=1",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    hmapCatgry.put("Select Reason", "0");
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(cursor.getString(1), cursor.getString(0));
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                hmapCatgry.put("No Reason", "0");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
             close();
         }
     }

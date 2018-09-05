@@ -2296,7 +2296,7 @@ if(NoOfOutletID.length>0)
 					}
 
 
-					Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
+					Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
 					startActivity(submitStoreIntent);
 					finish();
 				}});
@@ -2495,10 +2495,14 @@ if(NoOfOutletID.length>0)
 				}
 				else if(whereTo.contentEquals("DayStart"))
 				{
-					Intent intent=new Intent(SyncMaster.this,DSR_Registration.class);
+					Intent i=new Intent(SyncMaster.this,SalesValueTarget.class);
+					i.putExtra("IntentFrom", 0);
+					startActivity(i);
+					finish();
+					/*Intent intent=new Intent(SyncMaster.this,DSR_Registration.class);
 					intent.putExtra("IntentFrom", "SPLASH");
 					startActivity(intent);
-					finish();;
+					finish();;*/
 
 				}
 				else
