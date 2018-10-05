@@ -380,17 +380,20 @@
 
         <activity
             android:name="project.astix.com.rsplsfaindirect.ViewAddedStore"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_view_added_store">
         </activity>
         <activity
             android:name="project.astix.com.rsplsfaindirect.AddNewStore_DynamicSectionWise"
             android:label="@string/title_activity_view_added_store"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="project.astix.com.rsplsfaindirect.QuotationActivity"
             android:label="@string/title_activity_quotation"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/MyThemeTab">
 
             <!--
@@ -404,6 +407,7 @@
         <activity
             android:name="project.astix.com.rsplsfaindirect.Delivery_Details_Activity"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/detailActivityTheme">
         </activity>
 
@@ -436,6 +440,7 @@
 
         <activity android:name=".DSR_Registration"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/StorelistTheme">
            <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -71,6 +71,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -251,6 +252,7 @@ public class NewStoreForm extends Fragment  {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+
 		helperDb=new DBAdapterKenya(getActivity());
 		inflaterSection=(LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		TelephonyManager tManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -4529,6 +4531,7 @@ public void selectedOption(String optId, String optionVal, EditText editext,List
 		
 		
 		 private boolean isValidEmail(String email) {
+
 				String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 

@@ -201,7 +201,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
     public ProgressDialog pDialog2STANDBY;
 
-    private final long startTime = 15000;
+    private final long startTime = 10000;
     private final long interval = 200;
 
     private static final String TAG = "LocationActivity";
@@ -1286,8 +1286,8 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 File del2 = new File(Environment.getExternalStorageDirectory(),  CommonInfo.TextFileFolder);
                 deleteNon_EmptyDir(del2);*/
                 try {
-                    dbengine.deleteViewAddedStore();
-                    dbengine.deletetblStoreList();
+                   /* dbengine.deleteViewAddedStore();
+                    dbengine.deletetblStoreList();*/
                 }
                 catch(Exception e)
                 {

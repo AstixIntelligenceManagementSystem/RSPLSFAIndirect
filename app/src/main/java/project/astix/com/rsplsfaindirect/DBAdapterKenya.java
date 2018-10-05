@@ -29161,7 +29161,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 
 	public void updateOriginalStock(LinkedHashMap<String,Integer> hmapProductStock,String distId)
 	{
-		//open();
+		open();
 		for(Map.Entry<String,Integer> entry:hmapProductStock.entrySet())
 		{
 			ContentValues values=new ContentValues();
@@ -29170,7 +29170,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 			db.update(DATABASE_TABLE_DISTRIBUTOR_STOCK,values,"DistributorNodeIdNodeType=? AND PrdctId=?", new String[]{distId,entry.getKey()});
 		}
 
-		//close();
+		close();
 	}
 
 	public void insertDistributorLeftOrderId(String distributorNodeIdNodeType,String orderId)
