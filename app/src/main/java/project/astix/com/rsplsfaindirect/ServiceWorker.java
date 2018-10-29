@@ -3335,6 +3335,11 @@ String RouteType="0";
 			dbengine.Delete_tblRouteMasterAndDistributorMstr();
 
 			NodeList tblRouteListMasterNode = doc.getElementsByTagName("tblRouteListMaster");
+			if(tblRouteListMasterNode.getLength()<1)
+            {
+               setmovie.director = "100";
+                return setmovie;
+            }
 			for (int i = 0; i < tblRouteListMasterNode.getLength(); i++)
 			{
 				String stID = "NA";
