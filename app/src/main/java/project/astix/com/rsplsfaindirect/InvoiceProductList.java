@@ -393,7 +393,7 @@ public Integer flg=0;
 
 						
 						row.setTag(CATIDFomProduct[current]);
-						
+
 						//row.setTag(CATID[current]);
 						row.setVisibility(View.VISIBLE);
 
