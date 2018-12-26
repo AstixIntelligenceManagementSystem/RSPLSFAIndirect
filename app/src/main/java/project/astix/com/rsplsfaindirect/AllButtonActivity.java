@@ -2415,7 +2415,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
                 {
                     try
                     {
-                       ll_execution.setEnabled(false);
+                      // ll_execution.setEnabled(false);
                         GetInvoiceForDay task = new GetInvoiceForDay(AllButtonActivity.this);
                         task.execute();
 

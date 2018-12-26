@@ -488,140 +488,6 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 
 
 
-/*
-
-
-				try
-				{
-
-				dbengine.open();
-				String Noti_textWithMsgServerID=dbengine.fetchNoti_textFromtblNotificationMstr();
-				dbengine.close();
-				//System.out.println("Sunil Tty Noti_textWithMsgServerID :"+Noti_textWithMsgServerID);
-				if(!Noti_textWithMsgServerID.equals("Null"))
-				{
-				StringTokenizer token = new StringTokenizer(String.valueOf(Noti_textWithMsgServerID), "_");
-				
-				MsgServerID= Integer.parseInt(token.nextToken().trim());
-				Noti_text= token.nextToken().trim();
-				
-				
-				if(Noti_text.equals("") || Noti_text.equals("Null"))
-				{
-					
-				}
-				else
-				{
-					
-					
-
-					 final AlertDialog builder = new AlertDialog.Builder(ProductOrderFilterSearch.this).create();
-				       
-
-						LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				        View openDialog = inflater.inflate(R.layout.custom_dialog, null);
-				        openDialog.setBackgroundColor(Color.parseColor("#ffffff"));
-				        
-				        builder.setCancelable(false);
-				     	TextView header_text=(TextView)openDialog. findViewById(R.id.txt_header);
-				     	final TextView msg=(TextView)openDialog. findViewById(R.id.msg);
-				     	
-						final Button ok_but=(Button)openDialog. findViewById(R.id.but_yes);
-						final Button cancel=(Button)openDialog. findViewById(R.id.but_no);
-						
-						cancel.setVisibility(View.GONE);
-					    header_text.setText(ProductOrderFilterSearch.this.getResources().getString(R.string.AlertDialogHeaderMsg));
-					     msg.setText(Noti_text);
-					     	
-					     	ok_but.setText(ProductOrderFilterSearch.this.getResources().getString(R.string.AlertDialogOkButton));
-					     	
-							builder.setView(openDialog,0,0,0,0);
-
-					        ok_but.setOnClickListener(new OnClickListener() 
-					        {
-								
-								@Override
-								public void onClick(View arg0) 
-								{
-
-									long syncTIMESTAMP = System.currentTimeMillis();
-									Date dateobj = new Date(syncTIMESTAMP);
-									SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.ENGLISH);
-									String Noti_ReadDateTime = df.format(dateobj);
-						    	
-									dbengine.open();
-									dbengine.updatetblNotificationMstr(MsgServerID,Noti_text,0,Noti_ReadDateTime,3);
-									dbengine.close();
-									
-									try
-									{
-										dbengine.open();
-									    int checkleftNoti=dbengine.countNumberOFNotificationtblNotificationMstr();
-									    if(checkleftNoti>0)
-									    {
-										    	String Noti_textWithMsgServerID=dbengine.fetchNoti_textFromtblNotificationMstr();
-												//System.out.println("Sunil Tty Noti_textWithMsgServerID :"+Noti_textWithMsgServerID);
-												if(!Noti_textWithMsgServerID.equals("Null"))
-												{
-													StringTokenizer token = new StringTokenizer(String.valueOf(Noti_textWithMsgServerID), "_");
-													
-													MsgServerID= Integer.parseInt(token.nextToken().trim());
-													Noti_text= token.nextToken().trim();
-													
-													dbengine.close();
-													if(Noti_text.equals("") || Noti_text.equals("Null"))
-													{
-														
-													}
-													else
-													{
-														  msg.setText(Noti_text);
-													}
-												}
-									    	
-									    }
-										else
-										{
-											builder.dismiss();
-										}
-									
-									}
-									catch(Exception e)
-									{
-										
-									}
-						            finally
-						            {
-						            	dbengine.close();
-									   
-						            }
-					            
-								
-								}
-							});
-					        
-					       
-					      
-					 
-					     	builder.show();
-						
-						
-						
-
-				
-					 
-				}
-				}
-				}
-				catch(Exception e)
-				{
-					
-				}
-
-
-*/
-
-
 			}
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -3923,7 +3789,7 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 							String schSlbBuckDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[0]; // Eaxmple:-1^1
 							String schSlbBuckOtherDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[1];  // Eaxmple:-1^23^1^10^0
 							int schSlbBuckId=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[0]);  //Exmaple Slab Bucket ID:- 1
-							int schSlbBuckCnt=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[1]);            //Example Number of Buckets under this Slab, Count:-1
+							int schSlbBuckCnt=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[1]);  //Example Number of Buckets under this Slab, Count:-1
 
 							String[] arrSubBucketDetails=schSlbBuckOtherDetails.split(Pattern.quote("*"));  //Example Split For Multiple Sub Buckets(AND Condition)
 							String[] arrMaintainDetailsOfBucketConditionsAgainstBuckId=new String[schSlbBuckCnt];  //Example Length of Buckes in Slab and which condition is true in case of OR
@@ -4258,7 +4124,12 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 										if(schSlabSubBucketType.equals("4"))
 										{
 											Double singleProdRate= Double.parseDouble(hmapPrdctVolRatTax.get(productIdFullFilledSlabWithQty).split(Pattern.quote("^"))[1]);
-											Double singlePrdctOderRate=singleProdRate * Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
+											int mapPrdctOdrQty=0;
+											if(hmapPrdctOdrQty.containsKey(productIdFullFilledSlabWithQty))
+											{
+												mapPrdctOdrQty=Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
+											}
+											Double singlePrdctOderRate=singleProdRate * mapPrdctOdrQty;
 											if(hmapSubBucketTotalValue.containsKey(RowIDFullFilledSlabWithQty))
 											{
 												Double prdctVal=Double.parseDouble(hmapSubBucketTotalValue.get(RowIDFullFilledSlabWithQty));
@@ -11791,13 +11662,13 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 
 			if(hmapProductRelatedSchemesList.containsKey(producTidToCalc))
 			{
-			/*String[] OldProds=dbengine.fnGetProductsAgainstBenifitTable(storeID, ProductIdOnClickedControl);
-		      for(int i=0;i<OldProds.length;i++)
-		      {
-		       hmapPrdctIdPrdctDscnt.put(OldProds[i], "0.00");
-		       ((TextView)ll_prdct_detal.findViewWithTag("tvDiscountVal_"+OldProds[i])).setText("0.00");
-		      }
-		      */
+                /*String[] OldProds=dbengine.fnGetProductsAgainstBenifitTable(storeID, ProductIdOnClickedControl);
+                  for(int i=0;i<OldProds.length;i++)
+                  {
+                   hmapPrdctIdPrdctDscnt.put(OldProds[i], "0.00");
+                   ((TextView)ll_prdct_detal.findViewWithTag("tvDiscountVal_"+OldProds[i])).setText("0.00");
+                  }
+                  */
 				//fnUpdateSchemeNameOnScehmeControl(ProductIdOnClickedControl123);
 				String SchIdsCompleteSchemeIdListOnProductID=hmapProductRelatedSchemesList.get(producTidToCalc);
 				if(hmapProductAddOnSchemesList.containsKey(producTidToCalc))

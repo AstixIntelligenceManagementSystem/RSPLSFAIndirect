@@ -564,7 +564,7 @@ public class InvoiceStoreSelection extends Activity implements OnItemSelectedLis
 			public void onClick(View v) 
 			{
 				
-				dbengine.open();
+				/*dbengine.open();
 				 int check = dbengine.CheckNonSubmitDataIntblInvoiceButtonStoreMstr();
 				 dbengine.close();
 				 
@@ -585,9 +585,9 @@ public class InvoiceStoreSelection extends Activity implements OnItemSelectedLis
 								dbengine.fnAllServerOrdersFlgWith0();
 								//Intent intent = new Intent(InvoiceStoreSelection.this, LauncherActivity.class);
 						    	//intent.putExtra("imei", imei);
-						        // startActivity(intent);
+						        // startActivity(intent);*/
 						         finish();
-							}
+					/*		}
 						});
 
 				alertDialogSubmitConfirm.setNegativeButton(R.string.txtNo,
@@ -609,7 +609,7 @@ public class InvoiceStoreSelection extends Activity implements OnItemSelectedLis
 				    //	intent.putExtra("imei", imei);
 				     //    startActivity(intent);
 				         finish();
-					}
+					}*/
 			}
 			
 		});

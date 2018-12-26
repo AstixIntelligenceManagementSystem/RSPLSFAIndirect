@@ -1,9 +1,9 @@
 <resources>
 
- <string name="app_name">RSPL SFA</string>
+ <!--<string name="app_name">RSPL SFA</string>-->
    <!-- <string name="app_name">RSPL SFA Stagging</string>-->
   <!--<string name="app_name">RSPL SFA Test</string>-->
-   <!-- <string name="app_name">RSPL SFA Dev</string>-->
+    <string name="app_name">RSPL SFA Dev</string>
 <!-- <string name="app_name">RSPL SFA Test Release</string>-->
 
   <!-- <string name="app_name">RSPL SFA Training</string>-->
@@ -47,6 +47,8 @@
     <string name="AlertDialogNoButton">No</string>
     <string name="genTermInformation">Information</string>
     <string name="genTermNoDataConnectionFullMsg">Your device has no Data Connection. \n Please ensure Internet is accessible to Continue.</string>
+
+    <string name="genTermNoDataForExecutionFullMsg">Order does not have products for execution.</string>
 
 
  <string name="BackButConfirm">Have you saved your data before going back?</string>
@@ -289,6 +291,9 @@
     <string name="txtInCases">In Cases</string>
     <string name="txtAcievementPer">Achievement % :</string>
     <string name="genTermRetrivingSummary">Generating Summary Report…</string>
+
+    <string name="genTermValidationOrder">Validating Execution…</string>
+
     <string name="genTermRetrivingTargetVsAchievedSummary">Generating Target Vs Achieved Report…</string>
 
     <string name="txtLessThanNinety" translatable="false">&lt;90%</string>

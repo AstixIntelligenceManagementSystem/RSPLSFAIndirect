@@ -1,9 +1,9 @@
 <resources>
 
-   <string name="app_name">RSPL SFA</string>
+  <!-- <string name="app_name">RSPL SFA</string>-->
     <!-- <string name="app_name">RSPL SFA Stagging</string>-->
-    <!--<string name="app_name">RSPL SFA Test</string>-->
-     <!--<string name="app_name">RSPL SFA Dev</string>-->
+   <!-- <string name="app_name">RSPL SFA Test</string>-->
+     <string name="app_name">RSPL SFA Dev</string>
     <!--<string name="app_name">RSPL SFA Test Release</string>-->
 
  <string name="genTermFetchingTime">वर्तमान समय ला रहा है..</string>
@@ -272,7 +272,8 @@
     <string name="genTermRetrivingSummary">जनरेटिंग सारांश रिपोर्ट ...</string>
     <string name="genTermRetrivingTargetVsAchievedSummary">जनरेटिंग लक्ष्य बनाम रिपोर्ट प्राप्त ...</string>
 
-
+   <string name="genTermValidationOrder">निष्पादन मान्य…</string>
+    <string name="genTermNoDataForExecutionFullMsg">आदेश में निष्पादन के लिए उत्पाद नहीं हैं।</string>
     <!--TargetVsAcievedActivity Activity ends here-->
 
 

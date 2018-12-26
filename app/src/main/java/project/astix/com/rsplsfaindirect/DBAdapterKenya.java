@@ -39,6 +39,8 @@ public class DBAdapterKenya
 	private static final String TAG = "DBAdapterKenya";
 	private boolean isDBOpenflag = false;
 
+
+
     private static final String TABLE_tblAllServicesCalledSuccessfull = "tblAllServicesCalledSuccessfull";
     private static final String DATABASE_CREATE_tblAllServicesCalledSuccessfull = "create table tblAllServicesCalledSuccessfull(flgAllServicesCalledOrNot int null);";
 
@@ -404,7 +406,7 @@ public class DBAdapterKenya
 	    private static final String DATABASE_TABLE_MAIN207 = "tblSchemeSlabBenefitsProductMappingDetail";
 	    private static final String DATABASE_TABLE_MAIN208 = "tblSchemeSlabBenefitsValueDetail";
 	    private static final String DATABASE_TABLE_MAIN209 = "tblProductRelatedScheme";
-    private static final String DATABASE_TABLE_MAINADDOnScheme = "tblProductADDONScheme";
+        private static final String DATABASE_TABLE_MAINADDOnScheme = "tblProductADDONScheme";
 	    private static final String DATABASE_TABLE_MAIN210 = "tblStoreProdcutPurchaseDetails";
 	    private static final String DATABASE_TABLE_Main211 = "tblStoreProductAppliedSchemesBenifitsRecords";
 
@@ -639,10 +641,10 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 	private static final String DATABASE_CREATE_TABLE_208 = "create table tblSchemeSlabBenefitsValueDetail (RowID text null,BenValue text null,Remarks text null,Type text null);";
 	   
 	private static final String DATABASE_CREATE_TABLE_209 = "create table tblProductRelatedScheme (ProductID text null,PrdString text null);";
-    private static final String DATABASE_CREATE_TABLE_ADDONSCHEME = "create table tblProductADDONScheme (ProductID text null,PrdString text null);";
+
 	private static final String DATABASE_CREATE_TABLE_210 = "create table tblStoreProdcutPurchaseDetails (IMEIno text not null,RouteID int null,StoreID text not null,CatID text  null,ProdID text not null,TransDate string not null,Stock integer not null,OrderQty integer not null,OrderVal real not null,FreeQty integer not null,DisVal real not null,Sstat integer not null,SampleQuantity int null,ProductShortName text null,ProductPrice real null, TaxRate real null,TaxValue real null,StoreCatNodeId int null,OrderIDPDA text null,flgIsQuoteRateApplied int null,distibutorID text null,flgOrderType int null);";
 	private static final String DATABASE_CREATE_TABLE_211 = "create table tblStoreProductAppliedSchemesBenifitsRecords (StoreID text not null,ProductID int not null,schId int not null,schSlabId integer not null,schSlbBuckId integer not null,schSlabSubBucketValue real not null,schSubBucketValType integer not null,schSlabSubBucketType int not null,BenifitRowID integer not null,BenSubBucketType int null,FreeProductID int null,BenifitSubBucketValue real null,BenifitMaxValue real null,BenifitAssignedValue real null,BenifitAssignedValueType int null,BenifitDiscountApplied int null,BenifitCouponCode text null,Sstat integer not null,Per real null,UOM real null,WhatFinallyApplied int null,schSlbRowId int null,SchTypeId int null,DiscountPercentage real null,OrderIDPDA text null,flgAddOn int null,isDiscountOnTotalAmount int null);";
-
+    private static final String DATABASE_CREATE_TABLE_ADDONSCHEME = "create table tblProductADDONScheme (ProductID text null,PrdString text null);";
 	private static final String DATABASE_CREATE_ADDONSCHEME = "create table tblStoreProductAddOnSchemeApplied (StoreID text not null,ProductID int not null,schId int not null,schSlabId integer not null,schSlbBuckId integer not null,schSlabSubBucketValue real not null,schSubBucketValType integer not null,schSlabSubBucketType int not null,BenifitRowID integer not null,BenSubBucketType int null,FreeProductID int null,BenifitSubBucketValue real null,BenifitMaxValue real null,BenifitAssignedValue real null,BenifitAssignedValueType int null,BenifitDiscountApplied int null,BenifitCouponCode text null,Sstat integer not null,Per real null,UOM real null,WhatFinallyApplied int null,schSlbRowId int null,SchTypeId int null,DiscountPercentage real null,OrderIDPDA text null,flgAddOn int null,isDiscountOnTotalAmount int null);";
 	//private static final String DATABASE_TABLE_ADDONSCHEME = "tblStoreProductAddOnSchemeApplied";
 	
@@ -1333,7 +1335,7 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 				  db.execSQL("DROP TABLE IF EXISTS tblStoreMaterialDetail");
 				  db.execSQL("DROP TABLE IF EXISTS tblStoreMaterialPhotoDetail");
 				  
-				  db.execSQL("DROP TABLE IF EXISTS tblNoVisitReasonMaster");
+				 // db.execSQL("DROP TABLE IF EXISTS tblNoVisitReasonMaster");
 				  //
 				  db.execSQL("DROP TABLE IF EXISTS tblNoVisitStoreDetails");
 				  db.execSQL("DROP TABLE IF EXISTS tblSalesQuoteSponsorMstr");
@@ -17362,7 +17364,7 @@ close();
 		public HashMap<String, String> fnProductRelatedSchemesList()
 		  {
 		   open();
-		   Cursor cursor = db.rawQuery("SELECT Distinct ProductID,PrdString from tblProductRelatedScheme", null);
+		   Cursor cursor = db.rawQuery("SELECT Distinct tblProductRelatedScheme.ProductID,PrdString from tblProductRelatedScheme inner join tblProductList ON tblProductRelatedScheme.ProductID=tblProductList.ProductID", null);
 		   try 
 		   {
 		    HashMap<String, String> SchemeIDFreePRodQtyDetails= new HashMap<String, String>();
@@ -17393,7 +17395,7 @@ close();
     {
         open();
         //
-        Cursor cursor = db.rawQuery("SELECT Distinct ProductID,PrdString from tblProductADDONScheme", null);
+        Cursor cursor = db.rawQuery("SELECT Distinct tblProductADDONScheme.ProductID,tblProductADDONScheme.PrdString from tblProductADDONScheme inner join tblProductList ON tblProductADDONScheme.ProductID=tblProductList.ProductID", null);
         try
         {
             HashMap<String, String> SchemeIDFreePRodQtyDetails= new HashMap<String, String>();
@@ -17608,7 +17610,7 @@ close();
 			//////////// System.out.println("fnCheckflgToShowStrachRowOrNot : " +chkI);
 			return chkI;
 		}
-		
+
 		public HashMap<String, String> fnSchemeIDandDescr()
 	    {
 	     open();
@@ -20267,7 +20269,7 @@ open();
 
 		}
 		catch (Exception e) {
-			System.out.println("Error fnGettblUOMMstr= "+e.toString());
+			System.out.println("Error tblBloodGroup= "+e.toString());
 		}
 		finally
 		{
@@ -20468,7 +20470,7 @@ open();
 
 		}
 		catch (Exception e) {
-			System.out.println("Error fnGettblUOMMstr= "+e.toString());
+			System.out.println("Error tblEducationQuali= "+e.toString());
 		}
 		finally
 		{
@@ -24895,7 +24897,7 @@ System.out.println("Error fnProductManufractureIDList= "+e.toString());
 public ArrayList<String> fectProductIDMappedInSchSlbSubBukRowIdTemp(int schSlbSubRowID) 
 {
 	open();
- Cursor cursor = db.rawQuery("SELECT ProductID FROM tblSchemeSlabBucketProductMapping WHERE RowID ="+ schSlbSubRowID , null);
+ Cursor cursor = db.rawQuery("SELECT tblSchemeSlabBucketProductMapping.ProductID FROM tblSchemeSlabBucketProductMapping  inner join tblProductList on tblProductList.ProductID=tblSchemeSlabBucketProductMapping.ProductID WHERE RowID ="+ schSlbSubRowID , null);
  try {
 	   ArrayList<String> CompleteResult = new ArrayList<String>();
   if (cursor.getCount() > 0) {
@@ -29175,7 +29177,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 
 	public void insertDistributorLeftOrderId(String distributorNodeIdNodeType,String orderId)
 	{
-		open();
+		//open();
 
 		ContentValues values=new ContentValues();
 
@@ -29186,7 +29188,7 @@ public  LinkedHashMap<String,String> fngetAllOptionForQuestionID(int QuestID)
 		db.insert(DATABASE_TABLE_DISTRIBUTOR_LEFTPRODUCT,null,values);
 
 
-		close();
+		//close();
 	}
 
 	public String getDstBIDOrderId()

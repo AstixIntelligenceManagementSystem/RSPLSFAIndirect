@@ -177,7 +177,7 @@ public class ListAdapter extends ArrayAdapter<String>  {
             	 viewHolder.text.setEnabled(false);
                  viewHolder.butInvoice.setEnabled(false);
                  viewHolder.butInvoice.setVisibility(View.INVISIBLE);
-                 viewHolder.checkConformExecutionStore.setVisibility(View.VISIBLE);
+                // viewHolder.checkConformExecutionStore.setVisibility(View.VISIBLE);
                  viewHolder.checkConformExecutionStore.setChecked(true);
                  viewHolder.checkConformExecutionStore.setButtonDrawable(context.getResources().getDrawable(R.drawable.checked));
             }

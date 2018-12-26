@@ -2,20 +2,28 @@ package project.astix.com.rsplsfaindirect;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +39,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Toast;
 
-public class InvoiceProductList  extends Activity implements OnItemSelectedListener
+public class InvoiceProductList  extends BaseActivity implements OnItemSelectedListener
 {
-
+public Integer flg=0;
+	public int flgExecutionStatus=0;
+	private Activity mContext;
+	public TableLayout tbl1_dyntable_For_ExecutionDetails;
+	public TableLayout tbl1_dyntable_For_OrderDetails;
+	public int chkFlgForErrorToCloseApp=0;
+	ServiceWorker newservice = new ServiceWorker();
+	int flgMandatoryStocvalidation=1; //Mark it as 0 if validation is not required.
+	HashMap<Integer,String> hmapPrdForSaving=new HashMap<Integer,String>();
+	public String strGblProductForServer="";
+	public String additionalDiscountValuenew="0";
 	public String imei;
 	public String StoreName;
 	public String currSysDate;
@@ -260,6 +279,7 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		mContext = this;
 		setContentView(R.layout.activity_invoice_productlist);
 		Intent passedvals = getIntent();
 		imei = passedvals.getStringExtra("imei");
@@ -311,18 +331,18 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 				PID = dbengine.FetchPidInvoice(TagStoreID,TagDate,TagOrderID);
 				System.out.println("Singh Testing PID one:");
 				System.out.println("Singh Testing PID :"+PID.length);
-				 if(PID.length>0)
-					{
+				/* if(PID.length>0)
+					{*/
 					 But_Conform_Select_Invoice.setEnabled(true);
 					 But_Cancel_Select.setEnabled(true);
 				    	//storeSaveOnly.setEnabled(true);
-					}
+					/*}
 				    else
 				    {
 				    	But_Conform_Select_Invoice.setEnabled(false);
 				    	But_Cancel_Select.setEnabled(false);
 				    	//storeSaveOnly.setEnabled(false);
-				    }
+				    }*/
 				    
 				System.out.println("Sameer 3");
 				//PName = dbengine.FetchPNameInvoice(StoreID);
@@ -370,10 +390,13 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 				 for (int current = 0; current <= (ProductID.length - 1); current++) 
 			        {
 						final TableRow row = (TableRow)inflater.inflate(R.layout.invoice_table_row, tl2 , false);
+
 						
 						row.setTag(CATIDFomProduct[current]);
+						
 						//row.setTag(CATID[current]);
 						row.setVisibility(View.VISIBLE);
+
 						TextView tv1 = (TextView)row.findViewById(R.id.tvProd);
 						
 						final EditText et1 = (EditText)row.findViewById(R.id.tvRate);
@@ -467,25 +490,93 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 					alertDialogNoConn.setPositiveButton(getText(R.string.AlertDialogYesButton),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) 
-								{ 
+								{
+									flg=1;
+									hmapPrdForSaving.clear();
+									strGblProductForServer="";
+									hmapPrdForSaving.put(0,imei + "^" +TagDate+ "^" +TagStoreID+ "^" +"0"+ "^" +"0"+ "^" +0.0+ "^" + 0+ "^" +0+ "^" + 0+ "^" +TagOrderID+ "^" +""+ "^" +"9"+ "^" +1+ "^" +0.0+ "^" +TagRouteID+ "^" +"0");
+
+									strGblProductForServer="0"+ "^" +0.0+ "^" + 0+ "^" +0+ "^" + 0+"^";
+									/*@PDA_IMEI VARCHAR(30),
+											@strData VARCHAR(MAX), --PrdID^Rate^DelQty^FreeQty^DiscAmount^|PrdID^Rate^DelQty^FreeQty^DiscAmount^|PrdID^Rate^DelQty^FreeQty^DiscAmount^|
+											@OrderID INT,
+											@strDate VARCHAR(20),
+											@AddDisc Amount,
+											@flgCancel TINYINT --1: Cancle*/
+
+									/*dbengine.open();
+									dbengine.saveInvoiceButtonStoreTransac("NA",TagDate,TagStoreID,"0","0",0.0, 0,
+											0, 0,TagOrderID,"","9",1,0.0,TagRouteID,"0");
+									dbengine.close();*/
+									if(flgMandatoryStocvalidation==1)
+									{
+										//Now call service to check for Distribuot Stock Validation absed on flag
+										if(hmapPrdForSaving!=null && hmapPrdForSaving.size()>0) {
+											if (isOnline()) {
+												try {
+													if(TextUtils.isEmpty(etadditionalDiscountValue.getText().toString().trim()))
+													{
+														additionalDiscountValuenew="0";
+													}
+													else
+													{
+														additionalDiscountValuenew=etadditionalDiscountValue.getText().toString().trim();
+													}
+													ServiceExecutionOrderValidate cuv = new ServiceExecutionOrderValidate();
+													cuv.execute();
+												} catch (Exception e) {
+													e.printStackTrace();
+
+												}
+											} else {
+												showNoConnAlert();
+											}
+										}
+										else
+										{
+											showDataforExecutionAlert();
+										}
+									}
+									else
+									{
+										dbengine.UpdateProductCancelStoreFlag(TagOrderID,0);
+
+										dialog.dismiss();
+										dbengine.UpdateProductCancelStoreFlag(TagOrderID.trim(),1);
+										dbengine.open();
+										dbengine.saveInvoiceButtonStoreTransac("NA",TagDate,TagStoreID,"0","0",0.0, 0,
+												0, 0,TagOrderID,"","9",1,0.0,TagRouteID,"0");
+										dbengine.close();
+										Intent fireBackDetPg = new Intent(InvoiceProductList.this, InvoiceStoreSelection.class);
+
+
+										fireBackDetPg.putExtra("imei", imei);
+										fireBackDetPg.putExtra("currSysDate", currSysDate);
+										fireBackDetPg.putExtra("pickerDate", pickerDate);
+										fireBackDetPg.putExtra("spinnerSlctd", spinnerRouteSelected);
+										fireBackDetPg.putExtra("spnrDistSlctd", spinnerDistSlctd);
+
+										startActivity(fireBackDetPg);
+										finish();
+									}
+
 									
-									
-				                      dbengine.UpdateProductCancelStoreFlag(TagOrderID.trim(),1);
+				                    /*  dbengine.UpdateProductCancelStoreFlag(TagOrderID.trim(),1);
 				                      dbengine.open();
 				                      dbengine.saveInvoiceButtonStoreTransac("NA",TagDate,TagStoreID,"0","0",0.0, 0,
 				                              0, 0,TagOrderID,"","9",1,0.0,TagRouteID,"0");
 				                      dbengine.close();
 									Intent fireBackDetPg = new Intent(InvoiceProductList.this, InvoiceStoreSelection.class);
-								
-								
+
+
 								fireBackDetPg.putExtra("imei", imei);
 								fireBackDetPg.putExtra("currSysDate", currSysDate);
 								fireBackDetPg.putExtra("pickerDate", pickerDate);
 								fireBackDetPg.putExtra("spinnerSlctd", spinnerRouteSelected);
 								fireBackDetPg.putExtra("spnrDistSlctd", spinnerDistSlctd);
-								
+
 								startActivity(fireBackDetPg);
-								finish();
+								finish();*/
 								}
 							});
 					alertDialogNoConn.setNegativeButton(getText(R.string.AlertDialogNoButton),
@@ -623,6 +714,27 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 			alert.show();
 			// alertDialogLowbatt.show();
 		}
+
+	public void showDataforExecutionAlert()
+	{
+		AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(InvoiceProductList.this);
+		alertDialogNoConn.setTitle(R.string.genTermInformation);
+		alertDialogNoConn.setMessage(R.string.genTermNoDataForExecutionFullMsg);
+		//alertDialogNoConn.setMessage(getText(R.string.connAlertErrMsg));
+		alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which)
+					{
+						dialog.dismiss();
+
+						//finish();
+					}
+				});
+		alertDialogNoConn.setIcon(R.drawable.error_ico);
+		AlertDialog alert = alertDialogNoConn.create();
+		alert.show();
+		// alertDialogLowbatt.show();
+	}
 	public void showSubmitConfirm() {
 		AlertDialog.Builder alertDialogSubmitConfirm = new AlertDialog.Builder(InvoiceProductList.this);
 		alertDialogSubmitConfirm.setTitle(R.string.genTermInformation);
@@ -633,7 +745,8 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 					public void onClick(DialogInterface dialog, int which) {
 						
 						syncClick = 1;
-						
+						flg=0;
+						dialog.dismiss();
 						//storeSubmit.setEnabled(false);
 						//storeSave4Later.setEnabled(false);
 						//storeSaveOnly.setEnabled(false);
@@ -661,6 +774,9 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 						//dbengine.deleteOldStoreInvoice(fStoreID);
 						dbengine.close();
 						//for(int countRow = 0; countRow <= tl2.getChildCount()-1; countRow++){
+
+						hmapPrdForSaving.clear();
+						strGblProductForServer="";
 						for (int countRow = 0; countRow <= (ProductID.length - 1); countRow++)
 						{
 							
@@ -714,39 +830,101 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 							else{
 								dVal[countRow] = 0.0;
 							}
-							
-							dbengine.open();
 							// change by sunil
 							//String OrderID=dbengine.FetchOrderIDInvoice(ProductID[countRow]);
 							//String OrderID=dbengine.FetchOrderIDInvoiceStoremstr(StoreID);
-							
+
 							//TagStoreID= ad.nextToken().trim();
 							//TagOrderID= ad.nextToken().trim();
-							
-							dbengine.saveInvoiceButtonStoreTransac(imei,TagDate,
-									TagStoreID,ProductID[countRow],pName[countRow],rte[countRow], oQty[countRow],
-									DelQty[countRow], fQty[countRow],TagOrderID,CurrentRowCategoryId,"9",0,dVal[countRow],TagRouteID,additionalDiscountValue);
-							//dbengine.saveStoreTransac(imei, pickerDate, StoreID, ProductID[countRow], stk[countRow], oQty[countRow], oVal[countRow], fQty[countRow], dVal[countRow], AppliedSchemeID, AppliedSlab, AppliedAbsVal, newSampleQty, pName[countRow], rte[countRow],CurrentRowCategoryId);//, DisplayName
-							dbengine.close();
-						}
-						
-						
-						
-						dbengine.UpdateProductCancelStoreFlag(TagOrderID,0);
-						
-						//dialog.dismiss();
 
-						Intent fireBackDetPg = new Intent(InvoiceProductList.this, InvoiceStoreSelection.class);
-						
-						
-						fireBackDetPg.putExtra("imei", imei);
-						fireBackDetPg.putExtra("currSysDate", currSysDate);
-						fireBackDetPg.putExtra("pickerDate", pickerDate);
-						fireBackDetPg.putExtra("spinnerSlctd", spinnerRouteSelected);
-						fireBackDetPg.putExtra("spnrDistSlctd", spinnerDistSlctd);
-						
-						startActivity(fireBackDetPg);
-						finish();
+							if(flgMandatoryStocvalidation==1) {
+								hmapPrdForSaving.put(Integer.parseInt(ProductID[countRow]), imei + "^" + TagDate + "^" +
+										TagStoreID + "^" + ProductID[countRow] + "^" + pName[countRow] + "^" + rte[countRow] + "^" + oQty[countRow] + "^" +
+										DelQty[countRow] + "^" + fQty[countRow] + "^" + TagOrderID + "^" + CurrentRowCategoryId + "^" + "9" + "^" + 0 + "^" + dVal[countRow] + "^" + TagRouteID + "^" + additionalDiscountValue);
+								if(strGblProductForServer.equals("")) {
+									strGblProductForServer = ProductID[countRow] + "^" + rte[countRow] + "^" + DelQty[countRow] + "^" + fQty[countRow] + "^" + dVal[countRow]+"^|";
+								}
+								else
+								{
+									strGblProductForServer = strGblProductForServer+ProductID[countRow] + "^" + rte[countRow] + "^" + DelQty[countRow] + "^" + fQty[countRow] + "^" + dVal[countRow]+"^|";
+								}
+
+
+							}
+							else
+							{
+								dbengine.open();
+
+
+								dbengine.saveInvoiceButtonStoreTransac(imei,TagDate,
+										TagStoreID,ProductID[countRow],pName[countRow],rte[countRow], oQty[countRow],
+										DelQty[countRow], fQty[countRow],TagOrderID,CurrentRowCategoryId,"9",0,dVal[countRow],TagRouteID,additionalDiscountValue);
+								//dbengine.saveStoreTransac(imei, pickerDate, StoreID, ProductID[countRow], stk[countRow], oQty[countRow], oVal[countRow], fQty[countRow], dVal[countRow], AppliedSchemeID, AppliedSlab, AppliedAbsVal, newSampleQty, pName[countRow], rte[countRow],CurrentRowCategoryId);//, DisplayName
+								dbengine.close();
+							}
+						}
+
+						/*dbengine.open();
+
+
+						dbengine.saveInvoiceButtonStoreTransac(imei,TagDate,
+								TagStoreID,ProductID[countRow],pName[countRow],rte[countRow], oQty[countRow],
+								DelQty[countRow], fQty[countRow],TagOrderID,CurrentRowCategoryId,"9",0,dVal[countRow],TagRouteID,additionalDiscountValue);
+						//dbengine.saveStoreTransac(imei, pickerDate, StoreID, ProductID[countRow], stk[countRow], oQty[countRow], oVal[countRow], fQty[countRow], dVal[countRow], AppliedSchemeID, AppliedSlab, AppliedAbsVal, newSampleQty, pName[countRow], rte[countRow],CurrentRowCategoryId);//, DisplayName
+						dbengine.close();*/
+
+
+
+
+
+						if(flgMandatoryStocvalidation==1)
+						{
+							//Now call service to check for Distribuot Stock Validation absed on flag
+							if(hmapPrdForSaving!=null && hmapPrdForSaving.size()>0) {
+								if (isOnline()) {
+									try {
+										if(TextUtils.isEmpty(etadditionalDiscountValue.getText().toString().trim()))
+										{
+											additionalDiscountValuenew="0";
+										}
+										else
+										{
+											additionalDiscountValuenew=etadditionalDiscountValue.getText().toString().trim();
+										}
+										ServiceExecutionOrderValidate cuv = new ServiceExecutionOrderValidate();
+										cuv.execute();
+									} catch (Exception e) {
+										e.printStackTrace();
+
+									}
+								} else {
+									showNoConnAlert();
+								}
+							}
+							else
+							{
+								showDataforExecutionAlert();
+							}
+						}
+						else
+						{
+							dbengine.UpdateProductCancelStoreFlag(TagOrderID,0);
+
+							//dialog.dismiss();
+
+							Intent fireBackDetPg = new Intent(InvoiceProductList.this, InvoiceStoreSelection.class);
+
+
+							fireBackDetPg.putExtra("imei", imei);
+							fireBackDetPg.putExtra("currSysDate", currSysDate);
+							fireBackDetPg.putExtra("pickerDate", pickerDate);
+							fireBackDetPg.putExtra("spinnerSlctd", spinnerRouteSelected);
+							fireBackDetPg.putExtra("spnrDistSlctd", spinnerDistSlctd);
+
+							startActivity(fireBackDetPg);
+							finish();
+						}
+
 						
 						// change by sunil
 						/*try {
@@ -780,13 +958,230 @@ public class InvoiceProductList  extends Activity implements OnItemSelectedListe
 		
 		AlertDialog alert = alertDialogSubmitConfirm.create();
 		
-		 /*Window window = alert.getWindow();
-		 window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-		 window.setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-		 window.setBackgroundDrawableResource(android.R.color.darker_gray);*/
-	     
+
 		alert.show();
 		
+	}
+
+	private class ServiceExecutionOrderValidate extends AsyncTask<Void, Void, Void>
+	{
+
+		ProgressDialog pDialogGetStores=new ProgressDialog(mContext);
+
+		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+
+			pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
+			pDialogGetStores.setMessage(getText(R.string.genTermValidationOrder));
+			pDialogGetStores.setIndeterminate(false);
+			pDialogGetStores.setCancelable(false);
+			pDialogGetStores.setCanceledOnTouchOutside(false);
+			pDialogGetStores.show();
+		}
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+			try
+			{
+				String fDate="";
+
+				int DatabaseVersion=dbengine.DATABASE_VERSION;
+				int ApplicationID=dbengine.Application_TypeID;
+
+
+
+				newservice = newservice.getInvoiceDirectSaveInvoice(getApplicationContext(),hmapPrdForSaving,strGblProductForServer,TagOrderID,additionalDiscountValuenew,flg);
+				if(!newservice.director.toString().trim().equals("1"))
+				{
+					if(chkFlgForErrorToCloseApp==0)
+					{
+						chkFlgForErrorToCloseApp=1;
+					}
+
+				}
+
+			}
+			catch (Exception e)
+			{}
+
+			finally
+			{}
+
+			return null;
+		}
+
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			super.onPostExecute(result);
+			Log.i("SvcMgr", "Service Execution cycle completed");
+
+			if(pDialogGetStores.isShowing())
+			{
+				pDialogGetStores.dismiss();
+			}
+			if(chkFlgForErrorToCloseApp==1)
+			{
+				chkFlgForErrorToCloseApp=0;
+				showAlertSingleButtonError("Error while validation Order Execution");
+			}
+			else
+			{
+				chkFlgForErrorToCloseApp=0;
+				if(newservice!=null)
+				{
+					flgExecutionStatus=newservice.flgExecutionStatus;
+					if(flgExecutionStatus==1)//Fully Executed
+					{
+						fnUpdateFlagBasedOnButtonExecution();
+						showOrderExcutionAlertSucess("Order Executed Successfully.");
+
+
+					}
+					else if(flgExecutionStatus==3)//Order Rejected due to insuffiecent stock
+					{
+						fnUpdateFlagBasedOnButtonExecution();
+						showOrderExcutionAlertSucess("Order Rejected due to insufficent stock");
+					}
+					else if(flgExecutionStatus==4)//Order Already Executed
+					{
+						fnUpdateFlagBasedOnButtonExecution();
+						showOrderExcutionAlertSucess("Order Already Executed");
+					}
+					else if(flgExecutionStatus==5)//Cancel Order
+					{
+						fnUpdateFlagBasedOnButtonExecution();
+						showOrderExcutionAlertSucess("Order Canceled Successfully.");
+					}
+					else if(flgExecutionStatus==2)//Partially Executed
+					{
+						if(newservice.hmapPrdExecutionFaliedList.size()>0)
+						{
+							LayoutInflater layoutInflater = LayoutInflater.from(InvoiceProductList.this);
+							View promptView = layoutInflater.inflate(R.layout.execution_failed_productlist, null);
+							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(InvoiceProductList.this);
+
+
+							alertDialogBuilder.setTitle(getText(R.string.genTermInformation));
+
+							LayoutInflater inflater = getLayoutInflater();
+
+							DisplayMetrics dm = new DisplayMetrics();
+							getWindowManager().getDefaultDisplay().getMetrics(dm);
+							double x = Math.pow(dm.widthPixels/dm.xdpi,2);
+							double y = Math.pow(dm.heightPixels/dm.ydpi,2);
+							double screenInches = Math.sqrt(x+y);
+							alertDialogBuilder.setView(promptView);
+
+							tbl1_dyntable_For_ExecutionDetails = (TableLayout) promptView.findViewById(R.id.dyntable_For_ExecutionDetails);
+
+
+							if(newservice.hmapPrdExecutionFaliedList!=null)
+							{
+								Set set2 = newservice.hmapPrdExecutionFaliedList.entrySet();
+								Iterator iterator = set2.iterator();
+								while(iterator.hasNext())
+								{
+									Map.Entry me2 = (Map.Entry)iterator.next();
+									dbengine.open();
+									String PName=dbengine.FetchPNameInvoice(me2.getKey().toString());
+									dbengine.close();
+
+									TableRow row = (TableRow)inflater.inflate(R.layout.tbl_row_failed_execution_prd_list, tbl1_dyntable_For_OrderDetails, false);
+									TextView tv1 = (TextView)row.findViewById(R.id.skuName);
+									EditText et_AllowedQty = (EditText) row.findViewById(R.id.et_AvlQty);
+									tv1.setText(PName);
+									et_AllowedQty.setText(me2.getValue().toString());
+									et_AllowedQty.setEnabled(false);
+									tbl1_dyntable_For_ExecutionDetails.addView(row);
+
+								}
+
+								alertDialogBuilder
+										.setCancelable(false)
+										.setPositiveButton(getText(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener() {
+											public void onClick(DialogInterface dialog, int id) {
+												dialog.dismiss();
+												fnUpdateFlagBasedOnButtonExecution();
+												showOrderExcutionAlertSucess("Order Partially Executed.");
+											}
+										});
+
+
+								alertDialogBuilder.setIcon(R.drawable.info_ico);
+								// create an alert dialog
+								AlertDialog alert = alertDialogBuilder.create();
+								alert.show();
+
+
+
+							}
+						}
+						else
+						{
+							fnUpdateFlagBasedOnButtonExecution();
+							showOrderExcutionAlertSucess("Order Executed Successfully.");
+						}
+					}
+
+
+				}
+			}
+
+
+
+		}
+	}
+
+
+	public void fnUpdateFlagBasedOnButtonExecution()
+	{
+		if(flg==0)
+		{
+			dbengine.UpdateProductCancelStoreFlag(TagOrderID,0);
+
+		}
+		if(flg==1)
+		{
+			dbengine.UpdateProductCancelStoreFlag(TagOrderID.trim(),1);
+			/*dbengine.open();
+			dbengine.saveInvoiceButtonStoreTransac("NA",TagDate,TagStoreID,"0","0",0.0, 0,
+					0, 0,TagOrderID,"","9",1,0.0,TagRouteID,"0");
+			dbengine.close();*/
+
+		}
+	}
+	public void showOrderExcutionAlertSucess(String msg)
+	{
+		final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.genTermInformation))
+				.setMessage(msg)
+				.setCancelable(false)
+				.setIcon(R.drawable.error_ico)
+				.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i)
+					{
+						dialogInterface.dismiss();
+
+							Intent fireBackDetPg = new Intent(InvoiceProductList.this, InvoiceStoreSelection.class);
+
+
+							fireBackDetPg.putExtra("imei", imei);
+							fireBackDetPg.putExtra("currSysDate", currSysDate);
+							fireBackDetPg.putExtra("pickerDate", pickerDate);
+							fireBackDetPg.putExtra("spinnerSlctd", spinnerRouteSelected);
+							fireBackDetPg.putExtra("spnrDistSlctd", spinnerDistSlctd);
+
+							startActivity(fireBackDetPg);
+							finish();
+
+					}
+				}).create().show();
 	}
 	 public boolean onKeyDown(int keyCode, KeyEvent event) {
 		  // TODO Auto-generated method stub
