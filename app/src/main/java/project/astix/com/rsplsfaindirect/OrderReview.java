@@ -8155,10 +8155,28 @@ GoogleApiClient.OnConnectionFailedListener{
 		tvFtotal.setText((""+ TotalFreeQTY).trim());
 
 		TotalProductLevelDiscount=Double.parseDouble(new DecimalFormat("##.##").format(TotalProductLevelDiscount));
-		tvDis.setText((""+ TotalProductLevelDiscount).trim());
+		String TotalProductLevelDiscountString = String.valueOf(TotalProductLevelDiscount);
+		if(TotalProductLevelDiscountString.contains("E") || TotalProductLevelDiscountString.contains("e")){
+			TotalProductLevelDiscountString=	convertExponential(TotalProductLevelDiscount);
+			tvDis.setText(TotalProductLevelDiscountString);
+		}
+		else{
+			tvDis.setText((""+ TotalProductLevelDiscount).trim());
+		}
+
 
 		TotalOrderValBeforeTax=Double.parseDouble(new DecimalFormat("##.##").format(TotalOrderValBeforeTax));
-		tv_NetInvValue.setText((""+ TotalOrderValBeforeTax).trim());
+		String TotalOrderValBeforeTaxString = String.valueOf(TotalOrderValBeforeTax);
+		if(TotalOrderValBeforeTaxString.contains("E") || TotalOrderValBeforeTaxString.contains("e")){
+			TotalOrderValBeforeTaxString=	convertExponential(TotalOrderValBeforeTax);
+			tv_NetInvValue.setText(TotalOrderValBeforeTaxString);
+			tv_NetInvAfterDiscount.setText(TotalOrderValBeforeTaxString);
+		}
+		else{
+			tv_NetInvValue.setText((""+ TotalOrderValBeforeTax).trim());
+			tv_NetInvAfterDiscount.setText(""+ TotalOrderValBeforeTax);
+		}
+
 
 		String percentBenifitMax=dbengine.fnctnGetMaxAssignedBen8DscntApld1(storeID,strGlobalOrderID);
 		Double percentMax=0.00;
@@ -8199,10 +8217,22 @@ GoogleApiClient.OnConnectionFailedListener{
 
 		tvAddDisc.setText(""+ "0.00");
 
-		tv_NetInvAfterDiscount.setText(""+ TotalOrderValBeforeTax);
+
+
+
 
 		TotTaxAmount=Double.parseDouble(new DecimalFormat("##.##").format(TotTaxAmount));
-		tvTAmt.setText(""+ TotTaxAmount);
+		String TotTaxAmountString = String.valueOf(TotTaxAmount);
+		if(TotTaxAmountString.contains("E") || TotTaxAmountString.contains("e")){
+			TotTaxAmountString=	convertExponential(TotTaxAmount);
+			tvTAmt.setText(TotTaxAmountString);
+
+		}
+		else{
+			tvTAmt.setText(""+ TotTaxAmount);
+
+		}
+
 
 		Double totalGrossVALMaxPercentage=TotalOrderValBeforeTax-TotalOrderValBeforeTax*(percentMaxGross/100);
 		Double totalGrossrVALMaxAmount=TotalOrderValBeforeTax-amountMaxGross;
@@ -8227,9 +8257,29 @@ GoogleApiClient.OnConnectionFailedListener{
 
 		Double GrossInvValue=totalGrossVALAfterDiscount + TotTaxAmount;
 		GrossInvValue=Double.parseDouble(new DecimalFormat("##.##").format(GrossInvValue));
-		tv_GrossInvVal.setText(""+GrossInvValue);
+		String GrossInvValueString = String.valueOf(GrossInvValue);
+		if(GrossInvValueString.contains("E") || GrossInvValueString.contains("e")){
+			GrossInvValueString=	convertExponential(GrossInvValue);
+			tv_GrossInvVal.setText(GrossInvValueString);
+
+		}
+		else{
+			tv_GrossInvVal.setText(""+GrossInvValue);
+
+		}
+
 		Double totalInvcVal= outstandingvalue+GrossInvValue;
-		tvTtlAmtOutstandingVAL.setText(""+totalInvcVal);
+		String totalInvcValString = String.valueOf(totalInvcVal);
+		if(totalInvcValString.contains("E") || totalInvcValString.contains("e")){
+			totalInvcValString=	convertExponential(totalInvcVal);
+			tvTtlAmtOutstandingVAL.setText(""+totalInvcValString);
+
+		}
+		else{
+			tvTtlAmtOutstandingVAL.setText(""+totalInvcVal);
+
+		}
+
 		//Now the its Time to Show the OverAll Summary Code Starts Here
 	}
 
@@ -12634,6 +12684,10 @@ GoogleApiClient.OnConnectionFailedListener{
 
 		}
 
+	}
+	public String convertExponential(double firstNumber){
+		String secondNumberAsString = String.format("%.2f",firstNumber);
+		return secondNumberAsString;
 	}
 
 }

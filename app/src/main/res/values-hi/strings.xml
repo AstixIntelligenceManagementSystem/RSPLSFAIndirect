@@ -1,9 +1,9 @@
 <resources>
 
-  <!-- <string name="app_name">RSPL SFA</string>-->
+   <string name="app_name">RSPL SFA</string>
     <!-- <string name="app_name">RSPL SFA Stagging</string>-->
-   <!-- <string name="app_name">RSPL SFA Test</string>-->
-     <string name="app_name">RSPL SFA Dev</string>
+    <!--<string name="app_name">RSPL SFA Test</string>-->
+     <!--<string name="app_name">RSPL SFA Dev</string>-->
     <!--<string name="app_name">RSPL SFA Test Release</string>-->
 
  <string name="genTermFetchingTime">वर्तमान समय ला रहा है..</string>
